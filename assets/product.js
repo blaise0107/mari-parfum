@@ -24,8 +24,8 @@
     const nav = document.getElementById("crumbs");
     if (!nav) return;
     nav.innerHTML = `
-      <a href="/">MARI PARFUM</a><span aria-hidden="true">/</span>
-      <a href="/#catalog">${MP.escapeHtml(MP.segmentName(product.segment))}</a><span aria-hidden="true">/</span>
+      <a href="./">MARI PARFUM</a><span aria-hidden="true">/</span>
+      <a href="./#catalog">${MP.escapeHtml(MP.segmentName(product.segment))}</a><span aria-hidden="true">/</span>
       <span>${MP.escapeHtml(product.name)}</span>`;
   }
 
@@ -265,7 +265,7 @@
     <div class="notfound">
       <h1>Такого аромата нет</h1>
       <p>Возможно, он ушёл из каталога или в адресе опечатка.</p>
-      <a class="btn btn--solid" href="/#catalog">Открыть каталог</a>
+      <a class="btn btn--solid" href="./#catalog">Открыть каталог</a>
     </div>`;
     document.title = "Аромат не найден — MARI PARFUM";
   }

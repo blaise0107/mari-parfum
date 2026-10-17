@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MARI PARFUM — страница не найдена</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Onest:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="/assets/styles.css">
+<link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 
@@ -17,21 +17,45 @@
   <div class="notfound">
     <h1>Страница не найдена</h1>
     <p>Такого адреса на витрине нет. Зато есть девятнадцать ароматов.</p>
-    <a class="btn btn--solid" href="/#catalog">Открыть каталог</a>
+    <a class="btn btn--solid" data-home href="#catalog">Открыть каталог</a>
   </div>
 </main>
 
-<script src="/assets/catalog.js"></script>
 <script>
-/* Адреса вида /product/miss-dior-cherie красивее, чем /product.html?id=...,
-   но GitHub Pages отдаёт такие пути через 404.html. Поэтому 404 работает
-   не заглушкой, а перенаправлением: читаем slug из пути и уводим на страницу
-   товара. Если slug не найден — остаёмся здесь и показываем каталог. */
+/* Адреса вида /product/miss-dior-cherie читаются лучше, чем
+   /product.html?id=miss-dior-cherie, но GitHub Pages отдаёт такой путь
+   через 404.html. Поэтому эта страница не заглушка, а перенаправитель.
+
+   Важно: витрина живёт в подкаталоге (/mari-parfum/), а не в корне домена.
+   Пути вида "/assets/styles.css" здесь уводили бы на коренень хоста,
+   поэтому все адреса собираются от вычисленного корня сайта. */
 (function () {
-  var match = /^\/product\/([^/?#]+)\/?$/.exec(window.location.pathname);
-  if (!match) return;
-  var slug = decodeURIComponent(match[1]);
-  window.location.replace("/product.html?id=" + encodeURIComponent(slug));
+  var path = location.pathname.replace(/^\/+/, "");
+  var parts = path.split("/");
+  var productAt = parts.indexOf("product");
+
+  // /<корень>/product/<slug> -> страница товара
+  if (productAt > 0 && parts.length === productAt + 2) {
+    var site = "/" + parts.slice(0, productAt).join("/") + "/";
+    location.replace(site + "product.html?id=" + encodeURIComponent(parts[productAt + 1]));
+    return;
+  }
+
+  // Корень витрины: первый сегмент пути. Для /mari-parfum/404.html это
+  // /mari-parfum/, для витрины в корне домена — /.
+  var root = "/" + parts[0] + (parts.length > 1 ? "/" : "");
+
+  var link = document.querySelector("[data-home]");
+  if (link) link.href = root + "#catalog";
+
+  // Ресурсы на этом пути GitHub Pages тоже отдаёт из корня домена,
+  // поэтому пересобираем и их.
+  var base = document.querySelector("base");
+  if (!base) {
+    base = document.createElement("base");
+    base.href = root;
+    document.head.appendChild(base);
+  }
 })();
 </script>
 </body>
