@@ -404,6 +404,9 @@ a {
   gap: 0.5rem;
   justify-items: center;
   text-align: center;
+  /* Это ссылка, но подчёркивать подписи флаконов незачем: они и так
+     в блоке с картинкой, а underline ломает ровную линию подписей. */
+  text-decoration: none;
 }
 
 .shelf__item .flacon {
@@ -613,6 +616,12 @@ a {
 
 .entry:hover {
   background: var(--wash);
+}
+
+.entry:hover .entry__name {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
 }
 
 .entry__thumb {
