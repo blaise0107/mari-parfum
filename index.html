@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MARI PARFUM — парфюмерия по миллилитрам</title>
+<meta name="description" content="MARI PARFUM — ароматы Dior, Tom Ford, Creed, Prada и других домов от 500 ₽ за 10 мл. Любой объём от 10 до 100 мл, доставка постоматом, оплата при получении.">
+<meta name="theme-color" content="#e9e9e4">
+<link rel="canonical" href="/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MARI PARFUM — парфюмерия по миллилитрам">
+<meta property="og:description" content="Ароматы от 500 ₽ за 10 мл. Объём от 10 до 100 мл, доставка постоматом, оплата при получении.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Onest:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "MARI PARFUM",
+  "description": "Парфюмерия по миллилитрам: оригинальные ароматы от 10 до 100 мл",
+  "priceRange": "500–8000 ₽",
+  "address": { "@type": "PostalAddress", "addressCountry": "RU" },
+  "telephone": "+79366007345"
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#catalog">Перейти к каталогу</a>
+
+<header class="topbar">
+  <div class="shell topbar__row">
+    <a class="wordmark" href="/">MARI PARFUM<span class="wordmark__thin">парфюмерия по мл</span></a>
+    <nav class="topbar__nav" aria-label="Основная навигация">
+      <a href="#catalog">Каталог</a>
+      <a href="#delivery">Доставка и оплата</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <button class="cart-button" type="button" data-cart-open aria-label="Открыть корзину">
+      Корзина
+      <span class="cart-button__count" data-cart-count data-empty="true">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Полка: первое, что видит посетитель, — сами ароматы, а не рекламный заголовок -->
+  <section class="shelf" aria-labelledby="shelf-title">
+    <div class="shell">
+      <div class="shelf__intro">
+        <h1 class="shelf__title" id="shelf-title">Подлинная парфюмерия по миллилитрам</h1>
+        <p class="shelf__rule">
+          Настоящие ароматы известных домов, разлитые в объёме, который вам нужен:
+          от пробника на 10 мл до флакона на 100 мл. Цена считается от 500 ₽ за 10 мл.
+        </p>
+      </div>
+      <div class="shelf__track" id="shelf" aria-label="Ароматы в наличии"></div>
+    </div>
+  </section>
+
+  <section class="filters" aria-label="Фильтры каталога">
+    <div class="shell filters__row">
+      <search class="search-field">
+        <label class="visually-hidden" for="q">Поиск по названию или бренду</label>
+        <span class="search-field__mark" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+            <circle cx="7" cy="7" r="5"></circle><path d="M11 11l4 4"></path>
+          </svg>
+        </span>
+        <input type="search" id="q" name="q" placeholder="Dior, Tom Ford, Sauvage…" autocomplete="off" autocorrect="off" spellcheck="false">
+      </search>
+
+      <div class="filters__group" role="group" aria-label="Сегмент">
+        <button class="chip" type="button" data-filter="segment" data-value="" aria-pressed="true">Все</button>
+      </div>
+
+      <div class="select-field">
+        <label class="visually-hidden" for="gender">Аромат</label>
+        <select id="gender" data-filter="gender">
+          <option value="">Любой аромат</option>
+          <option value="female">Женские</option>
+          <option value="male">Мужские</option>
+          <option value="unisex">Унисекс</option>
+        </select>
+      </div>
+
+      <div class="select-field">
+        <label class="visually-hidden" for="season">Сезон</label>
+        <select id="season" data-filter="season">
+          <option value="">Любой сезон</option>
+          <option value="all">Всесезонные</option>
+          <option value="summer">Летние</option>
+          <option value="spring">Весенние</option>
+          <option value="winter">Зимние</option>
+        </select>
+      </div>
+
+      <p class="filters__count" id="count" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="ledger shell" id="catalog" aria-label="Каталог"></section>
+
+  <!-- Доставка и оплата -->
+  <section class="shell" id="delivery" aria-labelledby="delivery-title">
+    <div class="ledger__heading" style="margin-bottom:1.75rem">
+      <h2 id="delivery-title">Доставка и оплата</h2>
+      <span class="ledger__range">по всей России</span>
+    </div>
+    <div class="footer__grid" style="padding-bottom:clamp(3rem,7vw,5rem)">
+      <div>
+        <h3 class="footer__title">Доставка</h3>
+        <ul class="footer__list" id="delivery-list"></ul>
+      </div>
+      <div>
+        <h3 class="footer__title">Оплата</h3>
+        <ul class="footer__list" id="payment-list"></ul>
+      </div>
+      <div>
+        <h3 class="footer__title">Как оформить</h3>
+        <ul class="footer__list">
+          <li>Соберите корзину на сайте.</li>
+          <li>Укажите имя, телефон и адрес.</li>
+          <li>Заказ приходит менеджеру, он подтверждает наличие и перезванивает.</li>
+          <li>Оплата при получении — наличными или картой.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer" id="contacts">
+  <div class="shell">
+    <div class="footer__grid">
+      <div>
+        <h3 class="footer__title">MARI PARFUM</h3>
+        <p>Парфюмерия по миллилитрам. Оригинальные ароматы, разлив от 10 до 100 мл.</p>
+      </div>
+      <div>
+        <h3 class="footer__title">Связь</h3>
+        <ul class="footer__list" id="contact-list"></ul>
+      </div>
+      <div>
+        <h3 class="footer__title">Разделы</h3>
+        <ul class="footer__list">
+          <li><a href="#catalog">Каталог</a></li>
+          <li><a href="#delivery">Доставка и оплата</a></li>
+          <li><a href="#catalog">Люкс</a></li>
+          <li><a href="#catalog">Средний сегмент</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer__legal">
+      Цены на сайте совпадают с ценами бота магазина: стоимость объёма считается
+      от базовых 10 мл. Акция «Скидка 5% на первый заказ» начисляется на сумму товаров
+      при заказе от 3 000 ₽. Заказы обрабатывает менеджер вручную, поэтому наличие
+      конкретного объёма подтверждается при звонке.
+    </p>
+  </div>
+</footer>
+
+<!-- ===================== Корзина ===================== -->
+<dialog class="drawer" id="cart" aria-label="Корзина">
+  <div class="drawer__head">
+    <h2 class="drawer__title">Корзина</h2>
+    <button class="icon-button" type="button" data-cart-close aria-label="Закрыть корзину">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 3l12 12M15 3L3 15"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="drawer__body">
+    <ul class="cart-list"></ul>
+
+    <div class="cart-empty" hidden>
+      <p>Здесь пока пусто.</p>
+      <button class="btn" type="button" data-cart-close>Вернуться к каталогу</button>
+    </div>
+  </div>
+
+  <div class="drawer__foot" hidden>
+    <p class="promo"></p>
+
+    <div class="totals">
+      <div class="totals__line"><span>Товары</span><span data-total-items></span></div>
+      <div class="totals__line totals__line--discount" data-total-discount hidden>
+        <span>Скидка</span><span data-value></span>
+      </div>
+      <div class="totals__line" data-total-delivery><span>Доставка</span><span data-value></span></div>
+      <div class="totals__line totals__line--sum"><span>Итого</span><span data-total-sum></span></div>
+    </div>
+
+    <button class="btn btn--plum btn--wide" type="button" data-checkout-open>Оформить заказ</button>
+  </div>
+</dialog>
+
+<!-- ===================== Оформление ===================== -->
+<dialog class="sheet" id="checkout" aria-label="Оформление заказа">
+  <div class="sheet__head">
+    <h2 class="sheet__title">Оформление заказа</h2>
+    <button class="icon-button" type="button" data-checkout-close aria-label="Закрыть оформление">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 3l12 12M15 3L3 15"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="sheet__body">
+    <div data-form-panel>
+      <p class="data-form-error form-error" data-form-error role="status" aria-live="polite"></p>
+
+      <form id="checkout-form" novalidate>
+        <!-- Ловушка для ботов: людям не видно, ботам заполнять нечем -->
+        <div class="visually-hidden" aria-hidden="true">
+          <label for="website">Не заполняйте это поле</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div style="display:grid;gap:1.4rem">
+          <div class="field">
+            <label for="name">Имя</label>
+            <input type="text" id="name" name="name" required minlength="2" maxlength="80"
+                   autocomplete="name" placeholder="Как к вам обращаться">
+          </div>
+
+          <div class="field">
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone" name="phone" required inputmode="tel" maxlength="24"
+                   autocomplete="tel" enterkeyhint="next">
+            <span class="field__hint">Позвоним, чтобы подтвердить заказ и наличие.</span>
+          </div>
+
+          <div class="field">
+            <label for="address">Адрес доставки</label>
+            <textarea id="address" name="address" required maxlength="400"
+                      autocomplete="street-address" placeholder="Город, улица, дом, квартира"></textarea>
+          </div>
+
+          <fieldset class="fieldset">
+            <legend>Доставка</legend>
+            <div id="delivery-options" style="display:grid;gap:.55rem"></div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend>Оплата</legend>
+            <div id="payment-options" style="display:grid;gap:.55rem"></div>
+          </fieldset>
+
+          <div class="field">
+            <label for="comment">Комментарий менеджеру</label>
+            <input type="text" id="comment" name="comment" maxlength="300"
+                   placeholder="Например: удобный постомат после 18:00">
+          </div>
+        </div>
+
+        <div class="totals" style="margin-block:1.5rem 1.25rem">
+          <div class="totals__line"><span>Доставка</span><span data-form-delivery-cost></span></div>
+          <div class="totals__line totals__line--sum"><span>Итого</span><span data-form-total></span></div>
+        </div>
+
+        <button class="btn btn--plum btn--wide" type="submit" data-submit>Оформить заказ</button>
+      </form>
+    </div>
+
+    <div class="order-done" data-done-panel hidden>
+      <h3 class="order-done__title" data-done-title>Заказ принят</h3>
+      <p class="order-done__text" data-done-text></p>
+      <p class="form-error" data-done-notice hidden></p>
+      <div data-order-summary></div>
+      <div class="order-done__actions">
+        <a class="btn btn--plum btn--wide" data-done-telegram href="#" target="_blank" rel="noopener">Отправить в Telegram</a>
+        <button class="btn btn--wide" type="button" data-done-copy>Скопировать заказ</button>
+        <button class="btn btn--wide" type="button" data-checkout-close>Вернуться в каталог</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast-area"></div>
+
+<script src="assets/catalog.js"></script>
+<script src="assets/flacon.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/home.js"></script>
+</body>
+</html>

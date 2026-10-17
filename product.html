@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Аромат — MARI PARFUM</title>
+<meta name="description" content="Оригинальная парфюмерия по миллилитрам в MARI PARFUM.">
+<meta name="theme-color" content="#e9e9e4">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Onest:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#dossier">Перейти к описанию</a>
+
+<header class="topbar">
+  <div class="shell topbar__row">
+    <a class="wordmark" href="/">MARI PARFUM<span class="wordmark__thin">парфюмерия по мл</span></a>
+    <nav class="topbar__nav" aria-label="Основная навигация">
+      <a href="/#catalog">Каталог</a>
+      <a href="/#delivery">Доставка и оплата</a>
+      <a href="/#contacts">Контакты</a>
+    </nav>
+    <button class="cart-button" type="button" data-cart-open aria-label="Открыть корзину">
+      Корзина
+      <span class="cart-button__count" data-cart-count data-empty="true">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="main" class="shell">
+  <nav class="crumbs" id="crumbs" aria-label="Хлебные крошки"></nav>
+  <article class="product" id="product"></article>
+  <section class="related" id="related" hidden>
+    <h2 class="related__title">Похожие ароматы</h2>
+    <div class="ledger__list" id="related-list"></div>
+  </section>
+</main>
+
+<footer class="footer" id="contacts">
+  <div class="shell">
+    <p class="footer__legal">
+      Стоимость объёма считается от базовых 10 мл. Заказы обрабатывает менеджер
+      вручную, наличие конкретного объёма подтверждается при звонке.
+    </p>
+  </div>
+</footer>
+
+<!-- ===================== Корзина ===================== -->
+<dialog class="drawer" id="cart" aria-label="Корзина">
+  <div class="drawer__head">
+    <h2 class="drawer__title">Корзина</h2>
+    <button class="icon-button" type="button" data-cart-close aria-label="Закрыть корзину">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 3l12 12M15 3L3 15"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="drawer__body">
+    <ul class="cart-list"></ul>
+    <div class="cart-empty" hidden>
+      <p>Здесь пока пусто.</p>
+      <button class="btn" type="button" data-cart-close>Вернуться к каталогу</button>
+    </div>
+  </div>
+
+  <div class="drawer__foot" hidden>
+    <p class="promo"></p>
+    <div class="totals">
+      <div class="totals__line"><span>Товары</span><span data-total-items></span></div>
+      <div class="totals__line totals__line--discount" data-total-discount hidden>
+        <span>Скидка</span><span data-value></span>
+      </div>
+      <div class="totals__line" data-total-delivery><span>Доставка</span><span data-value></span></div>
+      <div class="totals__line totals__line--sum"><span>Итого</span><span data-total-sum></span></div>
+    </div>
+    <button class="btn btn--plum btn--wide" type="button" data-checkout-open>Оформить заказ</button>
+  </div>
+</dialog>
+
+<!-- ===================== Оформление ===================== -->
+<dialog class="sheet" id="checkout" aria-label="Оформление заказа">
+  <div class="sheet__head">
+    <h2 class="sheet__title">Оформление заказа</h2>
+    <button class="icon-button" type="button" data-checkout-close aria-label="Закрыть оформление">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 3l12 12M15 3L3 15"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="sheet__body">
+    <div data-form-panel>
+      <p class="form-error" data-form-error role="status" aria-live="polite"></p>
+
+      <form id="checkout-form" novalidate>
+        <div class="visually-hidden" aria-hidden="true">
+          <label for="website">Не заполняйте это поле</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div style="display:grid;gap:1.4rem">
+          <div class="field">
+            <label for="name">Имя</label>
+            <input type="text" id="name" name="name" required minlength="2" maxlength="80" autocomplete="name" placeholder="Как к вам обращаться">
+          </div>
+          <div class="field">
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone" name="phone" required inputmode="tel" maxlength="24" autocomplete="tel" enterkeyhint="next">
+            <span class="field__hint">Позвоним, чтобы подтвердить заказ и наличие.</span>
+          </div>
+          <div class="field">
+            <label for="address">Адрес доставки</label>
+            <textarea id="address" name="address" required maxlength="400" autocomplete="street-address" placeholder="Город, улица, дом, квартира"></textarea>
+          </div>
+          <fieldset class="fieldset">
+            <legend>Доставка</legend>
+            <div id="delivery-options" style="display:grid;gap:.55rem"></div>
+          </fieldset>
+          <fieldset class="fieldset">
+            <legend>Оплата</legend>
+            <div id="payment-options" style="display:grid;gap:.55rem"></div>
+          </fieldset>
+          <div class="field">
+            <label for="comment">Комментарий менеджеру</label>
+            <input type="text" id="comment" name="comment" maxlength="300" placeholder="Например: удобный постомат после 18:00">
+          </div>
+        </div>
+
+        <div class="totals" style="margin-block:1.5rem 1.25rem">
+          <div class="totals__line"><span>Доставка</span><span data-form-delivery-cost></span></div>
+          <div class="totals__line totals__line--sum"><span>Итого</span><span data-form-total></span></div>
+        </div>
+
+        <button class="btn btn--plum btn--wide" type="submit" data-submit>Оформить заказ</button>
+      </form>
+    </div>
+
+    <div class="order-done" data-done-panel hidden>
+      <h3 class="order-done__title" data-done-title>Заказ принят</h3>
+      <p class="order-done__text" data-done-text></p>
+      <p class="form-error" data-done-notice hidden></p>
+      <div data-order-summary></div>
+      <div class="order-done__actions">
+        <a class="btn btn--plum btn--wide" data-done-telegram href="#" target="_blank" rel="noopener">Отправить в Telegram</a>
+        <button class="btn btn--wide" type="button" data-done-copy>Скопировать заказ</button>
+        <button class="btn btn--wide" type="button" data-checkout-close>Вернуться в каталог</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast-area"></div>
+
+<script src="assets/catalog.js"></script>
+<script src="assets/flacon.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/product.js"></script>
+</body>
+</html>

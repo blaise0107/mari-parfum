@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MARI PARFUM — страница не найдена</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Onest:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<main class="shell">
+  <div class="notfound">
+    <h1>Страница не найдена</h1>
+    <p>Такого адреса на витрине нет. Зато есть девятнадцать ароматов.</p>
+    <a class="btn btn--solid" href="/#catalog">Открыть каталог</a>
+  </div>
+</main>
+
+<script src="/assets/catalog.js"></script>
+<script>
+/* Адреса вида /product/miss-dior-cherie красивее, чем /product.html?id=...,
+   но GitHub Pages отдаёт такие пути через 404.html. Поэтому 404 работает
+   не заглушкой, а перенаправлением: читаем slug из пути и уводим на страницу
+   товара. Если slug не найден — остаёмся здесь и показываем каталог. */
+(function () {
+  var match = /^\/product\/([^/?#]+)\/?$/.exec(window.location.pathname);
+  if (!match) return;
+  var slug = decodeURIComponent(match[1]);
+  window.location.replace("/product.html?id=" + encodeURIComponent(slug));
+})();
+</script>
+</body>
+</html>
