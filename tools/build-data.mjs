@@ -7,8 +7,9 @@
  *
  * Запуск: node tools/build-data.mjs
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -190,5 +191,42 @@ const js = `// СГЕНЕРИРОВАНО tools/build-data.mjs из catalog.json
 window.MP_DATA = ${JSON.stringify(payload, null, 2)};
 `;
 
-await writeFile(resolve(here, "..", "assets", "catalog.js"), js, "utf8");
-console.log(`catalog.js: ${products.length} товаров, сегментов ${segmentOrder.length}, доставка ${payload.delivery.length}, оплата ${payload.payment.length}`);
+const site = resolve(here, "..");
+await writeFile(resolve(site, "assets", "catalog.js"), js, "utf8");
+
+/* Версия ресурсов.
+
+   GitHub Pages отдаёт файлы с `max-age=600`, поэтому после выкладки
+   браузер до десяти минут показывает прошлую версию — а это значит
+   «я поправил, а на сайте ничего не изменилось». Лечится подстановкой
+   метки в адрес: хеш считается по содержимому самих ресурсов, поэтому
+   меняется только тогда, когда меняется код, и руками его трогать не нужно.
+*/
+const assetsDir = resolve(site, "assets");
+const fingerprint = createHash("sha1");
+for (const name of readdirSync(assetsDir).sort()) {
+  if (!/\.(js|css|svg)$/.test(name)) continue;
+  fingerprint.update(name);
+  fingerprint.update(readFileSync(resolve(assetsDir, name), "utf8"));
+}
+const version = fingerprint.digest("hex").slice(0, 8);
+
+for (const page of ["index.html", "product.html", "404.html"]) {
+  const file = resolve(site, page);
+  let html;
+  try {
+    html = readFileSync(file, "utf8");
+  } catch {
+    continue;
+  }
+  // Сначала снимаем прежнюю метку, иначе query накапливался бы: ?v=ab?v=cd
+  const before = html;
+  html = html.replace(/([\/"'])assets\/([\w.-]+)\?v=[0-9a-f]+/g, "$1assets/$2");
+  html = html.replace(/([\/"'])assets\/([\w.-]+)(["'])/g, `$1assets/$2?v=${version}$3`);
+  if (html !== before) await writeFile(file, html, "utf8");
+}
+
+console.log(
+  `catalog.js: ${products.length} товаров, сегментов ${segmentOrder.length}, ` +
+    `доставка ${payload.delivery.length}, оплата ${payload.payment.length}; версия ресурсов v=${version}`
+);
