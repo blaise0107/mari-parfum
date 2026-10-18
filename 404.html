@@ -5,31 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MARI PARFUM — страница не найдена</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="assets/favicon.svg?v=aa313467" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Onest:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=aa313467">
-<link rel="stylesheet" href="assets/flacons.css?v=aa313467">
-</head>
-<body>
-
-<main class="shell">
-  <div class="notfound">
-    <h1>Страница не найдена</h1>
-    <p>Такого адреса на витрине нет. Зато есть девятнадцать ароматов.</p>
-    <a class="btn btn--solid" data-home href="#catalog">Открыть каталог</a>
-  </div>
-</main>
 
 <script>
 /* Адреса вида /product/miss-dior-cherie читаются лучше, чем
    /product.html?id=miss-dior-cherie, но GitHub Pages отдаёт такой путь
    через 404.html. Поэтому эта страница не заглушка, а перенаправитель.
 
-   Важно: витрина живёт в подкаталоге (/mari-parfum/), а не в корне домена.
-   Пути вида "/assets/styles.css?v=aa313467" здесь уводили бы на коренень хоста,
-   поэтому все адреса собираются от вычисленного корня сайта. */
+   Скрипт стоит в <head> ДО всех <link> — и это не stylistic выбор.
+   Витрина живёт в подкаталоге (/mari-parfum/), а эта страница может быть
+   отдана по любому несуществующему пути: /mari-parfum/product/miss-dior-cherie,
+   /mari-parfum/oops/typo и так далее. Относительный assets/styles.css оттуда
+   уедет в /mari-parfum/product/assets/styles.css и вернёт 404.
+
+   <base href> решает это, но только если он появился в документе ДО разбора
+   ссылок: браузер уже не переспрашивает адреса у тех <link>, которые
+   запросил. Поэтому вычисление корня и редирект уходят наверх, а страница
+   для настоящей ошибки 404 остаётся в своём оформлении. */
 (function () {
   var path = location.pathname.replace(/^\/+/, "");
   var parts = path.split("/");
@@ -45,18 +36,35 @@
   // Корень витрины: первый сегмент пути. Для /mari-parfum/404.html это
   // /mari-parfum/, для витрины в корне домена — /.
   var root = "/" + parts[0] + (parts.length > 1 ? "/" : "");
+  var base = document.createElement("base");
+  base.href = root;
+  document.head.appendChild(base);
+})();
+</script>
 
+<link rel="icon" href="assets/favicon.svg?v=b7cef21e" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Onest:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="assets/styles.css?v=b7cef21e">
+<link rel="stylesheet" href="assets/flacons.css?v=b7cef21e">
+</head>
+<body>
+
+<main class="shell">
+  <div class="notfound">
+    <h1>Страница не найдена</h1>
+    <p>Такого адреса на витрине нет. Зато есть девятнадцать ароматов.</p>
+    <a class="btn btn--solid" data-home href="./#catalog">Открыть каталог</a>
+  </div>
+</main>
+
+<script>
+/* Ссылка на каталог: путь известен только после вычисления корня выше,
+   поэтому ставим его здесь, когда <base> уже в документе. */
+(function () {
   var link = document.querySelector("[data-home]");
-  if (link) link.href = root + "#catalog";
-
-  // Ресурсы на этом пути GitHub Pages тоже отдаёт из корня домена,
-  // поэтому пересобираем и их.
-  var base = document.querySelector("base");
-  if (!base) {
-    base = document.createElement("base");
-    base.href = root;
-    document.head.appendChild(base);
-  }
+  if (link) link.href = "./#catalog";
 })();
 </script>
 </body>
