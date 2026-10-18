@@ -1,5 +1,5 @@
-// СГЕНЕРИРОВАНО tools/build-data.mjs из catalog.json, settings.json бота и providers.json.
-// Правьте источник и пересоберите: node tools/build-data.mjs
+// СГЕНЕРИРОВАНО tools/build-data.mjs из catalog.json и settings.json.
+// Правьте источник (catalog.json / settings.json) и пересоберите: node tools/build-data.mjs
 window.MP_DATA = {
   "brand": "MARI PARFUM",
   "manager": "Mari13011",
@@ -379,7 +379,7 @@ window.MP_DATA = {
     {
       "key": "cdek_pvz",
       "name": "СДЭК — пункт выдачи",
-      "desc": "В Дрезне работает 1 пункт выдачи СДЭК, точный адрес и режим подтвердит менеджер",
+      "desc": "В Дрезне работает 1 пункт выдачи СДЭК, адрес подтвердит менеджер",
       "emoji": "",
       "price": 350,
       "freeOver": 0,
@@ -395,7 +395,7 @@ window.MP_DATA = {
     {
       "key": "boxberry_pvz",
       "name": "Boxberry — пункт выдачи",
-      "desc": "Ближайшие пункты выдачи в Дзержинском городском округе и соседних городах",
+      "desc": "Ближайшие пункты в Дзержинском городском округе и соседних городах",
       "emoji": "",
       "price": 330,
       "freeOver": 0,
@@ -410,7 +410,7 @@ window.MP_DATA = {
     {
       "key": "russianpost",
       "name": "Почта России — отделение",
-      "desc": "До отделения в Дрезне или в городе назначения",
+      "desc": "До отделения в городе назначения",
       "emoji": "",
       "price": 300,
       "freeOver": 0,
@@ -425,7 +425,7 @@ window.MP_DATA = {
     {
       "key": "cdek_courier",
       "name": "СДЭК — курьером до двери",
-      "desc": "Курьер привозит на дом, удобно выбрать интервал по телефону",
+      "desc": "Курьер привозит на дом, интервал выбираем по телефону",
       "emoji": "",
       "price": 500,
       "freeOver": 0,
@@ -440,9 +440,9 @@ window.MP_DATA = {
     {
       "key": "local_courier",
       "name": "Курьер по Дрезне",
-      "desc": "Свой курьер по городу, бесплатно от 3 000 ₽",
+      "desc": "Свой курьер по городу",
       "emoji": "",
-      "price": 0,
+      "price": 200,
       "freeOver": 3000,
       "order": 50,
       "service": "own",
@@ -471,7 +471,7 @@ window.MP_DATA = {
       "key": "postomat_5ka",
       "name": "Постомат 5ka",
       "desc": "Через 100 лет",
-      "emoji": "",
+      "emoji": "🦧",
       "price": 1,
       "freeOver": 0,
       "order": 90,
@@ -513,7 +513,7 @@ window.MP_DATA = {
     {
       "key": "sbp",
       "name": "СБП по QR-коду",
-      "desc": "Перевод через Систему быстрых платежей в любом банке, QR пришлем в чат",
+      "desc": "Оплата в любом банке по QR",
       "emoji": "",
       "price": 0,
       "freeOver": 0,
@@ -541,7 +541,7 @@ window.MP_DATA = {
     {
       "key": "card_online",
       "name": "Картой на сайте",
-      "desc": "Оплата картой прямо на витрине, без перевода",
+      "desc": "Оплата картой прямо на витрине",
       "emoji": "",
       "price": 0,
       "freeOver": 0,
@@ -556,7 +556,7 @@ window.MP_DATA = {
     {
       "key": "tinkoff",
       "name": "Тинькофф Оплата",
-      "desc": "Оплата картой через Тинькофф, ссылка приходит в чат",
+      "desc": "Ссылка на оплату приходит в чат",
       "emoji": "",
       "price": 0,
       "freeOver": 0,
@@ -570,78 +570,75 @@ window.MP_DATA = {
     }
   ],
   "services": {
+    "own": {
+      "name": "Своими силами",
+      "kind": "both",
+      "status": "live",
+      "integration": "own",
+      "comment": "Курьер, самовывоз, наличные — без внешних сервисов"
+    },
     "cdek": {
       "name": "СДЭК",
       "kind": "delivery",
       "status": "live",
       "integration": "manual",
-      "comment": "Пока точки выдачи выбирает менеджер. Виджет СДЭК подключается по ключам из личного кабинета."
+      "comment": "Пункты выдачи выбирает менеджер; виджет подключается по ключам из кабинета"
     },
     "boxberry": {
       "name": "Boxberry",
       "kind": "delivery",
       "status": "live",
       "integration": "manual",
-      "comment": "Список пунктов выдачи подтягивается по токену из личного кабинета."
+      "comment": "Список пунктов выдачи подтягивается по токену из кабинета"
     },
     "russianpost": {
       "name": "Почта России",
       "kind": "delivery",
       "status": "live",
       "integration": "manual",
-      "comment": "Почтовый индекс и трек-номер подтверждает менеджер."
-    },
-    "sbp": {
-      "name": "СБП",
-      "kind": "payment",
-      "status": "live",
-      "integration": "manual",
-      "comment": "QR-код для перевода менеджер присылает в чат."
-    },
-    "sberbank": {
-      "name": "Сбербанк",
-      "kind": "payment",
-      "status": "live",
-      "integration": "manual",
-      "comment": "Перевод по реквизитам, которые присылает менеджер."
-    },
-    "yukassa": {
-      "name": "ЮKassa",
-      "kind": "payment",
-      "status": "planned",
-      "integration": "api",
-      "comment": "Приём онлайн-платежей. Нужен договор и ключи shopId / secretKey.",
-      "planned": true
-    },
-    "tinkoff": {
-      "name": "Тинькофф Оплата",
-      "kind": "payment",
-      "status": "planned",
-      "integration": "api",
-      "comment": "Приём онлайн-платежей. Нужен договор и ключи TerminalKey.",
-      "planned": true
-    },
-    "cloudpayments": {
-      "name": "CloudPayments",
-      "kind": "payment",
-      "status": "planned",
-      "integration": "api",
-      "comment": "Приём онлайн-платежей. Альтернатива ЮKassa, тариф ниже на безналичном обороте.",
-      "planned": true
+      "comment": "Почтовый индекс и трек-номер подтверждает менеджер"
     },
     "avito": {
       "name": "Avito",
       "kind": "delivery",
       "status": "live",
       "integration": "own",
-      "comment": "Отправка в своём объявлении, без интеграции."
+      "comment": "Отправка в своём объявлении, без интеграции"
     },
-    "own": {
-      "name": "Своими силами",
-      "kind": "both",
+    "sbp": {
+      "name": "СБП",
+      "kind": "payment",
       "status": "live",
-      "integration": "own",
-      "comment": "Без внешних сервисов: курьер, самовывоз, наличные."
+      "integration": "manual",
+      "comment": "QR-код присылает менеджер"
+    },
+    "sberbank": {
+      "name": "Сбербанк",
+      "kind": "payment",
+      "status": "live",
+      "integration": "manual",
+      "comment": "Перевод по реквизитам менеджера"
+    },
+    "yukassa": {
+      "name": "ЮKassa",
+      "kind": "payment",
+      "status": "planned",
+      "integration": "api",
+      "comment": "Нужен договор и ключи shopId / secretKey"
+    },
+    "tinkoff": {
+      "name": "Тинькофф Оплата",
+      "kind": "payment",
+      "status": "planned",
+      "integration": "api",
+      "comment": "Нужен договор и ключи TerminalKey"
+    },
+    "cloudpayments": {
+      "name": "CloudPayments",
+      "kind": "payment",
+      "status": "planned",
+      "integration": "api",
+      "comment": "Альтернатива ЮKassa, тариф ниже на безналичном обороте"
     }
   },
   "city": {
