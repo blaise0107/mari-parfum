@@ -99,7 +99,8 @@
     const price = MP.priceForVolume(product, selectedMl);
     const perMl = MP.pricePerMl(product, selectedMl);
 
-    document.getElementById("price").textContent = MP.money(price);
+    // Цена не перескакивает, а домаркивается: на видно, из чего сложилась сумма.
+    MP.animateNumber(document.getElementById("price"), price);
     document.getElementById("per-ml").textContent = `${MP.money(perMl)} за 1 мл · всего ${selectedMl} мл`;
     document.getElementById("plinth-ml").textContent = `${selectedMl} мл`;
     document.getElementById("buy-label").textContent = `Добавить в корзину · ${MP.money(price * qty)}`;
@@ -119,7 +120,8 @@
     }
 
     document.querySelectorAll("[data-ml-option]").forEach((button) => {
-      button.setAttribute("aria-pressed", String(Number(button.dataset.mlOption) === selectedMl));
+      const active = Number(button.dataset.mlOption) === selectedMl;
+      button.setAttribute("aria-pressed", String(active));
     });
 
     const output = document.getElementById("qty-output");
@@ -215,46 +217,9 @@
     crumbs();
     related();
 
-    renderContactLists();
-  }
-
-  /* Доставка и оплата нужны и здесь: форма оформления общая для страниц. */
-  function renderContactLists() {
-    const delivery = MP.data.delivery || [];
-    const payment = MP.data.payment || [];
-
-    const dBox = document.getElementById("delivery-options");
-    if (dBox && !dBox.children.length) {
-      dBox.innerHTML = delivery
-        .map(
-          (method, i) => `
-      <label class="option">
-        <input type="radio" name="delivery" value="${MP.escapeHtml(method.key)}"${i === 0 ? " checked" : ""}>
-        <span class="option__text">
-          <span class="option__name">${MP.escapeHtml(method.name)}</span>
-          ${method.desc ? `<span class="option__meta">${MP.escapeHtml(method.desc)}</span>` : ""}
-        </span>
-        <span class="option__price">${method.price ? MP.escapeHtml(MP.money(method.price)) : "бесплатно"}</span>
-      </label>`
-        )
-        .join("");
-    }
-
-    const pBox = document.getElementById("payment-options");
-    if (pBox && !pBox.children.length) {
-      pBox.innerHTML = payment
-        .map(
-          (method, i) => `
-      <label class="option">
-        <input type="radio" name="payment" value="${MP.escapeHtml(method.key)}"${i === 0 ? " checked" : ""}>
-        <span class="option__text">
-          <span class="option__name">${MP.escapeHtml(method.name)}</span>
-          ${method.desc ? `<span class="option__meta">${MP.escapeHtml(method.desc)}</span>` : ""}
-        </span>
-      </label>`
-        )
-        .join("");
-    }
+    MP.renderOptions("delivery-options", MP.data.delivery, "delivery");
+    MP.renderOptions("payment-options", MP.data.payment, "payment");
+    MP.reveal();
   }
 
   function notFound() {
@@ -274,12 +239,19 @@
     product = MP.findProduct(key);
     if (!product) {
       notFound();
-      renderContactLists();
-      return;
+    } else {
+      volumes = MP.volumesFor(product);
+      selectedMl = volumes[0];
+      render();
     }
-    volumes = MP.volumesFor(product);
-    selectedMl = volumes[0];
-    render();
+    // Форма оформления общая для страниц: способы доставки и оплаты
+    // рисуются всегда, даже если товар не нашёлся — заказ всё равно можно
+    // оформить из корзины.
+    MP.renderOptions("delivery-options", MP.data.delivery, "delivery");
+    MP.renderOptions("payment-options", MP.data.payment, "payment");
+
+    const sheen = document.querySelector(".page-sheen");
+    if (sheen) window.setTimeout(() => sheen.remove(), 2200);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

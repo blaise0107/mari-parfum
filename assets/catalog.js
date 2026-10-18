@@ -1,5 +1,5 @@
-// СГЕНЕРИРОВАНО tools/build-data.mjs из catalog.json и settings.json бота.
-// Правьте источник (catalog.json / settings.json) и пересоберите: node tools/build-data.mjs
+// СГЕНЕРИРОВАНО tools/build-data.mjs из catalog.json, settings.json бота и providers.json.
+// Правьте источник и пересоберите: node tools/build-data.mjs
 window.MP_DATA = {
   "brand": "MARI PARFUM",
   "manager": "Mari13011",
@@ -377,12 +377,110 @@ window.MP_DATA = {
   ],
   "delivery": [
     {
+      "key": "cdek_pvz",
+      "name": "СДЭК — пункт выдачи",
+      "desc": "В Дрезне работает 1 пункт выдачи СДЭК, точный адрес и режим подтвердит менеджер",
+      "emoji": "",
+      "price": 350,
+      "freeOver": 0,
+      "order": 10,
+      "service": "cdek",
+      "status": "live",
+      "hint": "",
+      "tags": [
+        "МО",
+        "дёшево"
+      ]
+    },
+    {
+      "key": "boxberry_pvz",
+      "name": "Boxberry — пункт выдачи",
+      "desc": "Ближайшие пункты выдачи в Дзержинском городском округе и соседних городах",
+      "emoji": "",
+      "price": 330,
+      "freeOver": 0,
+      "order": 20,
+      "service": "boxberry",
+      "status": "live",
+      "hint": "",
+      "tags": [
+        "МО"
+      ]
+    },
+    {
+      "key": "russianpost",
+      "name": "Почта России — отделение",
+      "desc": "До отделения в Дрезне или в городе назначения",
+      "emoji": "",
+      "price": 300,
+      "freeOver": 0,
+      "order": 30,
+      "service": "russianpost",
+      "status": "live",
+      "hint": "",
+      "tags": [
+        "вся Россия"
+      ]
+    },
+    {
+      "key": "cdek_courier",
+      "name": "СДЭК — курьером до двери",
+      "desc": "Курьер привозит на дом, удобно выбрать интервал по телефону",
+      "emoji": "",
+      "price": 500,
+      "freeOver": 0,
+      "order": 40,
+      "service": "cdek",
+      "status": "live",
+      "hint": "",
+      "tags": [
+        "МО"
+      ]
+    },
+    {
+      "key": "local_courier",
+      "name": "Курьер по Дрезне",
+      "desc": "Свой курьер по городу, бесплатно от 3 000 ₽",
+      "emoji": "",
+      "price": 0,
+      "freeOver": 3000,
+      "order": 50,
+      "service": "own",
+      "status": "live",
+      "hint": "",
+      "tags": [
+        "Дрезна"
+      ]
+    },
+    {
+      "key": "pickup",
+      "name": "Самовывоз или встреча",
+      "desc": "Забрать лично в Дрезне либо встретиться в удобном месте",
+      "emoji": "",
+      "price": 0,
+      "freeOver": 0,
+      "order": 60,
+      "service": "own",
+      "status": "live",
+      "hint": "",
+      "tags": [
+        "Дрезна"
+      ]
+    },
+    {
       "key": "postomat_5ka",
       "name": "Постомат 5ka",
       "desc": "Через 100 лет",
-      "emoji": "🦧",
+      "emoji": "",
       "price": 1,
-      "order": 4
+      "freeOver": 0,
+      "order": 90,
+      "service": "own",
+      "status": "live",
+      "hint": "",
+      "tags": [
+        "Дрезна"
+      ]
     },
     {
       "key": "avito",
@@ -390,27 +488,167 @@ window.MP_DATA = {
       "desc": "",
       "emoji": "",
       "price": 0,
-      "order": 99
+      "freeOver": 0,
+      "order": 99,
+      "service": "avito",
+      "status": "live",
+      "hint": "",
+      "tags": []
     }
   ],
   "payment": [
     {
       "key": "cash",
       "name": "При получении",
-      "desc": "Наличными или картой",
+      "desc": "Наличными или картой курьеру",
       "emoji": "",
       "price": 0,
-      "order": 1
+      "freeOver": 0,
+      "order": 10,
+      "service": "own",
+      "status": "live",
+      "hint": "Оплата при получении — наличными или картой курьеру.",
+      "tags": []
+    },
+    {
+      "key": "sbp",
+      "name": "СБП по QR-коду",
+      "desc": "Перевод через Систему быстрых платежей в любом банке, QR пришлем в чат",
+      "emoji": "",
+      "price": 0,
+      "freeOver": 0,
+      "order": 20,
+      "service": "sbp",
+      "status": "live",
+      "hint": "Пришлём QR-код: оплата в любом банке по СБП.",
+      "tags": [
+        "мгновенно"
+      ]
     },
     {
       "key": "sberbank",
-      "name": "Сбербанк",
-      "desc": "Перевод",
+      "name": "Перевод в Сбербанк",
+      "desc": "Реквизиты пришлёт менеджер",
       "emoji": "",
       "price": 0,
-      "order": 2
+      "freeOver": 0,
+      "order": 30,
+      "service": "sberbank",
+      "status": "live",
+      "hint": "Пришлём реквизиты для перевода в Сбербанк.",
+      "tags": []
+    },
+    {
+      "key": "card_online",
+      "name": "Картой на сайте",
+      "desc": "Оплата картой прямо на витрине, без перевода",
+      "emoji": "",
+      "price": 0,
+      "freeOver": 0,
+      "order": 40,
+      "service": "yukassa",
+      "status": "planned",
+      "hint": "Оплата картой прямо на витрине.",
+      "tags": [
+        "нужен договор"
+      ]
+    },
+    {
+      "key": "tinkoff",
+      "name": "Тинькофф Оплата",
+      "desc": "Оплата картой через Тинькофф, ссылка приходит в чат",
+      "emoji": "",
+      "price": 0,
+      "freeOver": 0,
+      "order": 50,
+      "service": "tinkoff",
+      "status": "planned",
+      "hint": "Ссылка на оплату придёт в чат.",
+      "tags": [
+        "нужен договор"
+      ]
     }
   ],
+  "services": {
+    "cdek": {
+      "name": "СДЭК",
+      "kind": "delivery",
+      "status": "live",
+      "integration": "manual",
+      "comment": "Пока точки выдачи выбирает менеджер. Виджет СДЭК подключается по ключам из личного кабинета."
+    },
+    "boxberry": {
+      "name": "Boxberry",
+      "kind": "delivery",
+      "status": "live",
+      "integration": "manual",
+      "comment": "Список пунктов выдачи подтягивается по токену из личного кабинета."
+    },
+    "russianpost": {
+      "name": "Почта России",
+      "kind": "delivery",
+      "status": "live",
+      "integration": "manual",
+      "comment": "Почтовый индекс и трек-номер подтверждает менеджер."
+    },
+    "sbp": {
+      "name": "СБП",
+      "kind": "payment",
+      "status": "live",
+      "integration": "manual",
+      "comment": "QR-код для перевода менеджер присылает в чат."
+    },
+    "sberbank": {
+      "name": "Сбербанк",
+      "kind": "payment",
+      "status": "live",
+      "integration": "manual",
+      "comment": "Перевод по реквизитам, которые присылает менеджер."
+    },
+    "yukassa": {
+      "name": "ЮKassa",
+      "kind": "payment",
+      "status": "planned",
+      "integration": "api",
+      "comment": "Приём онлайн-платежей. Нужен договор и ключи shopId / secretKey.",
+      "planned": true
+    },
+    "tinkoff": {
+      "name": "Тинькофф Оплата",
+      "kind": "payment",
+      "status": "planned",
+      "integration": "api",
+      "comment": "Приём онлайн-платежей. Нужен договор и ключи TerminalKey.",
+      "planned": true
+    },
+    "cloudpayments": {
+      "name": "CloudPayments",
+      "kind": "payment",
+      "status": "planned",
+      "integration": "api",
+      "comment": "Приём онлайн-платежей. Альтернатива ЮKassa, тариф ниже на безналичном обороте.",
+      "planned": true
+    },
+    "avito": {
+      "name": "Avito",
+      "kind": "delivery",
+      "status": "live",
+      "integration": "own",
+      "comment": "Отправка в своём объявлении, без интеграции."
+    },
+    "own": {
+      "name": "Своими силами",
+      "kind": "both",
+      "status": "live",
+      "integration": "own",
+      "comment": "Без внешних сервисов: курьер, самовывоз, наличные."
+    }
+  },
+  "city": {
+    "name": "Дрезна",
+    "region": "Московская область",
+    "note": "Самовывоз и курьер по городу — своими силами, без курьерских служб."
+  },
   "promo": {
     "title": "Скидка 5% на первый заказ",
     "percent": 5,

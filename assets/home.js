@@ -1,5 +1,5 @@
 /* =========================================================================
-   Главная страница: полка, фильтры, реестр цен, списки доставки и оплаты.
+   Главная страница: полка, фильтры, реестр цен, доставка и оплата.
    ========================================================================= */
 
 (function () {
@@ -28,9 +28,9 @@
       seen.add(product.brand);
       picks.push(product);
     }
-    const featured = picks.slice(0, 14);
 
-    track.innerHTML = featured
+    track.innerHTML = picks
+      .slice(0, 14)
       .map(
         (product) => `
       <a class="shelf__item" href="${MP.escapeHtml(MP.productHref(product))}">
@@ -101,7 +101,7 @@
     if (SEASON_LABEL[product.season]) tags.push(SEASON_LABEL[product.season]);
 
     return `
-    <a class="entry" href="${MP.escapeHtml(MP.productHref(product))}">
+    <a class="entry reveal" href="${MP.escapeHtml(MP.productHref(product))}">
       <span class="entry__thumb"><span class="flacon">${window.MPFlacon.render(product, {
         ml: min,
         volumes: volumes,
@@ -138,24 +138,10 @@
       <div class="blank">
         <h2>Ничего не нашлось</h2>
         <p>Попробуйте другой запрос или сбросьте фильтры — в каталоге ${MP.products.length} ароматов.</p>
-        <p style="margin-top:1.25rem"><button class="btn" type="button" id="reset-filters">Сбросить фильтры</button></p>
+        <p class="blank__action"><button class="btn" type="button" id="reset-filters">Сбросить фильтры</button></p>
       </div>`;
       const reset = document.getElementById("reset-filters");
-      if (reset) {
-        reset.addEventListener("click", () => {
-          state.q = "";
-          state.segment = "";
-          state.gender = "";
-          state.season = "";
-          document.getElementById("q").value = "";
-          document.getElementById("gender").value = "";
-          document.getElementById("season").value = "";
-          Array.prototype.forEach.call(document.querySelectorAll('.chip[data-filter="segment"]'), (chip) => {
-            chip.setAttribute("aria-pressed", chip.dataset.value === "" ? "true" : "false");
-          });
-          renderLedger();
-        });
-      }
+      if (reset) reset.addEventListener("click", resetFilters);
       return;
     }
 
@@ -165,14 +151,11 @@
       const items = found.filter((product) => product.segment === segment.key);
       if (items.length) groups.push({ segment: segment, items: items });
     });
-    // Найденные по запросу товары вне сегментов (их быть не должно, но вдруг).
-    const loose = found.filter((product) => !MP.data.segments.some((s) => s.key === product.segment));
-    if (loose.length) groups.push({ segment: { key: "", name: "Прочее", range: "" }, items: loose });
 
     root.innerHTML = groups
       .map(
-        (group) => `
-      <section class="ledger__segment">
+        (group, index) => `
+      <section class="ledger__segment reveal" style="--reveal-delay: ${index * 70}ms">
         <div class="ledger__heading">
           <h2>${MP.escapeHtml(group.segment.name)}</h2>
           <span class="ledger__range">${MP.escapeHtml(group.segment.range || "")}</span>
@@ -181,38 +164,62 @@
       </section>`
       )
       .join("");
+
+    MP.reveal();
   }
 
-  /* ---------- списки в подвале и форме ---------- */
+  function resetFilters() {
+    state.q = "";
+    state.segment = "";
+    state.gender = "";
+    state.season = "";
+    document.getElementById("q").value = "";
+    document.getElementById("gender").value = "";
+    document.getElementById("season").value = "";
+    Array.prototype.forEach.call(document.querySelectorAll('.chip[data-filter="segment"]'), (chip) => {
+      chip.setAttribute("aria-pressed", chip.dataset.value === "" ? "true" : "false");
+    });
+    renderLedger();
+  }
 
-  function renderMethodList(targetId, methods) {
-    const list = document.getElementById(targetId);
-    if (!list) return;
-    list.innerHTML = methods
-      .map((method) => {
-        const cost = method.price ? `${MP.formatPrice(method.price)} ₽` : "бесплатно";
-        const desc = method.desc ? ` — ${method.desc}` : "";
-        return `<li>${MP.escapeHtml(method.emoji ? method.emoji + " " : "")}${MP.escapeHtml(method.name)}${MP.escapeHtml(desc)} · ${cost}</li>`;
-      })
+  /* ---------- доставка и оплата ---------- */
+
+  /** Человеческая цена доставки с учётом «бесплатно от N ₽». */
+  function deliveryPriceLabel(method) {
+    if (!method) return "—";
+    if (method.freeOver) return `бесплатно от ${MP.money(method.freeOver)}`;
+    return method.price ? MP.money(method.price) : "бесплатно";
+  }
+
+  function methodMarkup(method, kind) {
+    const tags = (method.tags || [])
+      .map((tag) => `<span class="tag">${MP.escapeHtml(tag)}</span>`)
       .join("");
-  }
-
-  function renderOptions(targetId, methods, name, checkedKey) {
-    const box = document.getElementById(targetId);
-    if (!box) return;
-    box.innerHTML = methods
-      .map(
-        (method, index) => `
-      <label class="option">
-        <input type="radio" name="${name}" value="${MP.escapeHtml(method.key)}"${index === 0 || method.key === checkedKey ? " checked" : ""}>
-        <span class="option__text">
-          <span class="option__name">${MP.escapeHtml(method.name)}</span>
-          ${method.desc ? `<span class="option__meta">${MP.escapeHtml(method.desc)}</span>` : ""}
+    const desc = method.desc ? `<span class="services__desc">${MP.escapeHtml(method.desc)}</span>` : "";
+    const cost = kind === "delivery" ? `<span class="services__cost">${MP.escapeHtml(deliveryPriceLabel(method))}</span>` : "";
+    return `
+      <li class="services__item${MP.isLive(method) ? "" : " services__item--planned"}">
+        <span class="services__top">
+          <span class="services__name">${MP.escapeHtml(method.name)}</span>
+          ${MP.serviceBadge(method)}
+          ${cost}
         </span>
-        <span class="option__price">${method.price ? MP.escapeHtml(MP.money(method.price)) : "бесплатно"}</span>
-      </label>`
-      )
-      .join("");
+        ${desc}
+        ${tags ? `<span class="entry__tags">${tags}</span>` : ""}
+      </li>`;
+  }
+
+  function renderServices() {
+    const delivery = document.getElementById("delivery-list");
+    const payment = document.getElementById("payment-list");
+    if (delivery) delivery.innerHTML = (MP.data.delivery || []).map((m) => methodMarkup(m, "delivery")).join("");
+    if (payment) payment.innerHTML = (MP.data.payment || []).map((m) => methodMarkup(m, "payment")).join("");
+
+    const city = MP.data.city || {};
+    const cityLine = document.getElementById("city-line");
+    if (cityLine) cityLine.textContent = [city.name, city.region].filter(Boolean).join(", ");
+    const note = document.getElementById("city-note");
+    if (note && city.note) note.textContent = city.note;
   }
 
   function renderContacts() {
@@ -230,7 +237,7 @@
         `<li><a href="https://t.me/${encodeURIComponent(manager)}" target="_blank" rel="noopener">@${MP.escapeHtml(manager)}</a></li>`
       );
     }
-    links.push(`<li>Ежедневно, 10:00–21:00</li>`);
+    links.push("<li>Ежедневно, 10:00–21:00</li>");
     list.innerHTML = links.join("");
   }
 
@@ -241,11 +248,10 @@
     renderSegmentChips();
     renderLedger();
     renderContacts();
+    renderServices();
 
-    renderMethodList("delivery-list", MP.data.delivery || []);
-    renderMethodList("payment-list", MP.data.payment || []);
-    renderOptions("delivery-options", MP.data.delivery || [], "delivery");
-    renderOptions("payment-options", MP.data.payment || [], "payment");
+    MP.renderOptions("delivery-options", MP.data.delivery, "delivery");
+    MP.renderOptions("payment-options", MP.data.payment, "payment");
 
     const search = document.getElementById("q");
     if (search) {
@@ -269,6 +275,10 @@
         renderLedger();
       });
     });
+
+    // Блик, пробежавший по странице, снимаем: он нужен один раз.
+    const sheen = document.querySelector(".page-sheen");
+    if (sheen) window.setTimeout(() => sheen.remove(), 2200);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

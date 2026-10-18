@@ -58,6 +58,7 @@ function readJson(file) {
 
 const catalogRaw = readJson(resolve(root, "catalog.json"));
 const settingsRaw = readJson(resolve(root, "settings.json"));
+const providersRaw = readJson(resolve(here, "..", "providers.json"));
 
 const settings = settingsRaw ?? {};
 const segmentsCfg = settings.segments ?? {};
@@ -105,21 +106,53 @@ for (const segment of segmentOrder) {
 /** Черновики в настройках бота («new», «test») на витрине выглядят как поломка. */
 const PLACEHOLDER = /^(new|test|tests|none|null|-|без|нет)$/i;
 
-function cleanMethods(list) {
-  return (Array.isArray(list) ? list : [])
-    .filter((m) => m && typeof m === "object")
-    .map((m) => ({
-      key: String(m.key ?? ""),
-      name: String(m.name ?? "").trim(),
-      desc: String(m.desc ?? "").trim(),
-      emoji: String(m.emoji ?? "").trim(),
-      price: Math.max(0, Math.trunc(Number(m.price) || 0)),
-      order: Math.trunc(Number(m.order) ?? 99),
-    }))
-    // Заглушки без названия (в настройках бота их полно) на сайте не показываем:
-    // «доставка: » без названия выглядит как поломка.
-    .filter((m) => m.key && m.name && !PLACEHOLDER.test(m.name) && !PLACEHOLDER.test(m.key))
-    .sort((a, b) => a.order - b.order);
+function normalizeMethod(raw, fallbackOrder = 99) {
+  return {
+    key: String(raw.key ?? ""),
+    name: String(raw.name ?? "").trim(),
+    desc: String(raw.desc ?? "").trim(),
+    emoji: String(raw.emoji ?? "").trim(),
+    price: Math.max(0, Math.trunc(Number(raw.price) || 0)),
+    // Сумма, от которой способ становится бесплатным (0 — всегда платный).
+    freeOver: Math.max(0, Math.trunc(Number(raw.freeOver) || 0)),
+    order: Math.trunc(Number(raw.order ?? fallbackOrder)),
+    service: String(raw.service ?? "own"),
+    status: raw.status === "planned" ? "planned" : "live",
+    // Подсказка после заказа: «пришлём QR-код», «пришлём реквизиты».
+    // Текст живёт в данных, а не в коде — иначе каждая правка копирайта
+    // требует релиза сайта.
+    hint: String(raw.hint ?? "").trim(),
+    tags: Array.isArray(raw.tags) ? raw.tags.map((t) => String(t).trim()).filter(Boolean) : [],
+  };
+}
+
+/**
+ * Методы = настройки бота + providers.json.
+ *
+ * Зачем два источника: settings.json принадлежит боту, и трогать его ради
+ * витрины нельзя. providers.json дописывает витрине то, чего у бота нет:
+ * привязку к внешнему сервису, статус готовности и город. Один и тот же key
+ * в обоих файлах — запись из providers.json перекрывает запись бота.
+ */
+function mergeMethods(fromBot, fromProviders) {
+  const byKey = new Map();
+
+  for (const raw of fromBot) {
+    if (!raw || typeof raw !== "object") continue;
+    const method = normalizeMethod(raw);
+    // Заглушки без названия (в настройках бота их полно) на витрине не показываем.
+    if (!method.key || !method.name || PLACEHOLDER.test(method.name) || PLACEHOLDER.test(method.key)) continue;
+    byKey.set(method.key, method);
+  }
+
+  for (const raw of fromProviders || []) {
+    if (!raw || typeof raw !== "object") continue;
+    const method = normalizeMethod(raw);
+    if (!method.key || !method.name || PLACEHOLDER.test(method.name)) continue;
+    byKey.set(method.key, method);
+  }
+
+  return [...byKey.values()].sort((a, b) => a.order - b.order);
 }
 
 const promoRaw = settings.promo ?? {};
@@ -137,8 +170,14 @@ const payload = {
     range: String(segmentsCfg[key]?.range ?? ""),
   })),
   products,
-  delivery: cleanMethods(settings.delivery_methods),
-  payment: cleanMethods(settings.payment_methods),
+  delivery: mergeMethods(settings.delivery_methods, providersRaw.delivery),
+  payment: mergeMethods(settings.payment_methods, providersRaw.payment),
+  services: providersRaw.services ?? {},
+  city: {
+    name: String(providersRaw.city?.name ?? "").trim(),
+    region: String(providersRaw.city?.region ?? "").trim(),
+    note: String(providersRaw.city?.note ?? "").trim(),
+  },
   promo: {
     title: String(promoRaw.title ?? "").trim() || (promoPercent ? `Скидка ${promoPercent}%` : ""),
     percent: promoPercent,
@@ -146,8 +185,8 @@ const payload = {
   },
 };
 
-const js = `// СГЕНЕРИРОВАНО tools/build-data.mjs из catalog.json и settings.json бота.
-// Правьте источник (catalog.json / settings.json) и пересоберите: node tools/build-data.mjs
+const js = `// СГЕНЕРИРОВАНО tools/build-data.mjs из catalog.json, settings.json бота и providers.json.
+// Правьте источник и пересоберите: node tools/build-data.mjs
 window.MP_DATA = ${JSON.stringify(payload, null, 2)};
 `;
 

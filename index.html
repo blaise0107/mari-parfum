@@ -4,13 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MARI PARFUM — парфюмерия по миллилитрам</title>
-<meta name="description" content="MARI PARFUM — ароматы Dior, Tom Ford, Creed, Prada и других домов от 500 ₽ за 10 мл. Любой объём от 10 до 100 мл, доставка постоматом, оплата при получении.">
-<meta name="theme-color" content="#e9e9e4">
+<meta name="description" content="MARI PARFUM — ароматы Dior, Tom Ford, Creed, Prada и других домов от 500 ₽ за 10 мл. Любой объём от 10 до 100 мл, доставка СДЭК, Boxberry, Почтой России и своим курьером по Дрезне.">
+<meta name="theme-color" content="#0b0908">
+<meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://blaise0107.github.io/mari-parfum/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://blaise0107.github.io/mari-parfum/">
 <meta property="og:title" content="MARI PARFUM — парфюмерия по миллилитрам">
-<meta property="og:description" content="Ароматы от 500 ₽ за 10 мл. Объём от 10 до 100 мл, доставка постоматом, оплата при получении.">
+<meta property="og:description" content="Ароматы от 500 ₽ за 10 мл. Объём от 10 до 100 мл, доставка СДЭК, Boxberry, Почтой России, своим курьером по Дрезне.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,12 +24,15 @@
   "name": "MARI PARFUM",
   "description": "Парфюмерия по миллилитрам: оригинальные ароматы от 10 до 100 мл",
   "priceRange": "500–8000 ₽",
-  "address": { "@type": "PostalAddress", "addressCountry": "RU" },
+  "areaServed": { "@type": "City", "name": "Дрезна" },
+  "address": { "@type": "PostalAddress", "addressLocality": "Дрезна", "addressRegion": "Московская область", "addressCountry": "RU" },
   "telephone": "+79366007345"
 }
 </script>
 </head>
 <body>
+
+<div class="page-sheen" aria-hidden="true"></div>
 
 <a class="skip-link" href="#catalog">Перейти к каталогу</a>
 
@@ -56,7 +60,7 @@
         <h1 class="shelf__title" id="shelf-title">Подлинная парфюмерия по миллилитрам</h1>
         <p class="shelf__rule">
           Настоящие ароматы известных домов, разлитые в объёме, который вам нужен:
-          от пробника на 10 мл до флакона на 100 мл. Цена считается от 500 ₽ за 10 мл.
+          от пробника на <b>10 мл</b> до флакона на <b>100 мл</b>. Цена считается от 500 ₽ за 10 мл.
         </p>
       </div>
       <div class="shelf__track" id="shelf" aria-label="Ароматы в наличии"></div>
@@ -107,28 +111,30 @@
   <section class="ledger shell" id="catalog" aria-label="Каталог"></section>
 
   <!-- Доставка и оплата -->
-  <section class="shell" id="delivery" aria-labelledby="delivery-title">
-    <div class="ledger__heading" style="margin-bottom:1.75rem">
+  <section class="ledger shell" id="delivery" aria-labelledby="delivery-title">
+    <div class="ledger__heading">
       <h2 id="delivery-title">Доставка и оплата</h2>
-      <span class="ledger__range">по всей России</span>
+      <span class="ledger__range" id="city-line"></span>
     </div>
-    <div class="footer__grid" style="padding-bottom:clamp(3rem,7vw,5rem)">
-      <div>
-        <h3 class="footer__title">Доставка</h3>
-        <ul class="footer__list" id="delivery-list"></ul>
+
+    <div class="services">
+      <div class="services__col">
+        <h3 class="services__title">Доставка</h3>
+        <ul class="services__list" id="delivery-list"></ul>
       </div>
-      <div>
-        <h3 class="footer__title">Оплата</h3>
-        <ul class="footer__list" id="payment-list"></ul>
+      <div class="services__col">
+        <h3 class="services__title">Оплата</h3>
+        <ul class="services__list" id="payment-list"></ul>
       </div>
-      <div>
-        <h3 class="footer__title">Как оформить</h3>
-        <ul class="footer__list">
+      <div class="services__col">
+        <h3 class="services__title">Как оформить</h3>
+        <ol class="services__steps">
           <li>Соберите корзину на сайте.</li>
           <li>Укажите имя, телефон и адрес.</li>
-          <li>Заказ приходит менеджеру, он подтверждает наличие и перезванивает.</li>
-          <li>Оплата при получении — наличными или картой.</li>
-        </ul>
+          <li>Заказ приходит менеджеру — он подтверждает наличие и перезванивает.</li>
+          <li>Оплата при получении, СБП или переводом в Сбербанк.</li>
+        </ol>
+        <p class="services__note" id="city-note"></p>
       </div>
     </div>
   </section>
@@ -214,16 +220,16 @@
 
   <div class="sheet__body">
     <div data-form-panel>
-      <p class="data-form-error form-error" data-form-error role="status" aria-live="polite"></p>
+      <p class="form-error" data-form-error role="status" aria-live="polite"></p>
 
       <form id="checkout-form" novalidate>
-        <!-- Ловушка для ботов: людям не видно, ботам заполнять нечем -->
+        <!-- Ловушка для ботов: поле скрыто от людей, ботам заполнять нечем -->
         <div class="visually-hidden" aria-hidden="true">
           <label for="website">Не заполняйте это поле</label>
           <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
         </div>
 
-        <div style="display:grid;gap:1.4rem">
+        <div class="form-stack">
           <div class="field">
             <label for="name">Имя</label>
             <input type="text" id="name" name="name" required minlength="2" maxlength="80"
@@ -245,12 +251,12 @@
 
           <fieldset class="fieldset">
             <legend>Доставка</legend>
-            <div id="delivery-options" style="display:grid;gap:.55rem"></div>
+            <div class="fieldset__options" id="delivery-options"></div>
           </fieldset>
 
           <fieldset class="fieldset">
             <legend>Оплата</legend>
-            <div id="payment-options" style="display:grid;gap:.55rem"></div>
+            <div class="fieldset__options" id="payment-options"></div>
           </fieldset>
 
           <div class="field">
@@ -260,7 +266,7 @@
           </div>
         </div>
 
-        <div class="totals" style="margin-block:1.5rem 1.25rem">
+        <div class="totals form-total">
           <div class="totals__line"><span>Доставка</span><span data-form-delivery-cost></span></div>
           <div class="totals__line totals__line--sum"><span>Итого</span><span data-form-total></span></div>
         </div>

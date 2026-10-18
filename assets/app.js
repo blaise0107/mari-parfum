@@ -250,7 +250,11 @@
     const itemsTotal = lines.reduce((acc, line) => acc + line.sum, 0);
     const { amount: discount, promo } = discountFor(itemsTotal);
     const delivery = deliveryMethod(deliveryKey);
-    const deliveryPrice = delivery ? Math.max(0, Math.trunc(Number(delivery.price) || 0)) : 0;
+    let deliveryPrice = delivery ? Math.max(0, Math.trunc(Number(delivery.price) || 0)) : 0;
+    // «Бесплатно от 3000 ₽»: порог считаем от суммы товаров — той же базы,
+    // что и акция, чтобы клиенту не приходилось держать в голове два разных
+    // правила на одни и те же деньги.
+    if (delivery && delivery.freeOver && itemsTotal >= delivery.freeOver) deliveryPrice = 0;
     return {
       lines: lines,
       itemsTotal: itemsTotal,
@@ -258,6 +262,7 @@
       promo: promo,
       delivery: delivery,
       deliveryPrice: deliveryPrice,
+      deliveryFree: Boolean(delivery && delivery.freeOver && itemsTotal >= delivery.freeOver),
       total: itemsTotal - discount + deliveryPrice,
     };
   }
@@ -333,6 +338,166 @@
     });
   }
 
+  /* ---------- внешние сервисы ---------- */
+
+  /**
+ * Название внешнего сервиса для способа. У «курьера по Дрезне» сервиса
+ * нет, у СДЭК — есть. Возвращает пустую строку для своих способов:
+ * «(Своими силами)» в заказе менеджеру только мешает.
+ */
+  function serviceName(key) {
+    const service = (DATA.services || {})[key || ""];
+    if (!service || !service.name || service.name === "Своими силами") return "";
+    return service.name;
+  }
+
+  /** Живой сервис (работает сегодня) или ещё нет (нужен договор). */
+  function isLive(method) {
+    return !method || method.status !== "planned";
+  }
+
+  /** Способы, которые покупатель реально может выбрать прямо сейчас. */
+  function selectableMethods(list) {
+    return (list || []).filter(isLive);
+  }
+
+  /**
+   * Бейдж внешнего сервиса в интерфейсе. Не рисуем ничего, если сервис
+   * свой: метка «Своими силами» только шумит.
+   */
+  function serviceBadge(method) {
+    if (!method) return "";
+    const service = (DATA.services || {})[method.service || ""];
+    if (!service || service.name === "Своими силами") return "";
+    const planned = !isLive(method);
+    return `<span class="badge${planned ? " badge--planned" : ""}">${escapeHtml(service.name)}</span>`;
+  }
+
+  /* ---------- появление секций ---------- */
+
+  let revealObserver = null;
+
+  /**
+   * Появление блоков при прокрутке.
+   *
+   * Класс .reveal-ready на <html> включает скрытие: без скриптов каталог
+   * остаётся видимым. Где браузер умеет scroll-driven animation, оформление
+   * ведёт CSS сам — тогда скрытие не нужно вовсе.
+   */
+  function reveal() {
+    const nodes = document.querySelectorAll(".reveal:not(.is-in)");
+    if (!nodes.length) return;
+
+    const root = document.documentElement;
+    if (!("IntersectionObserver" in window)) {
+      nodes.forEach((el) => el.classList.add("is-in"));
+      return;
+    }
+    if (CSS.supports && CSS.supports("animation-timeline", "view()")) {
+      // Нативная анимация уже рисует появление — не включаем скрытие,
+      // иначе блок мигнёт, пока CSS-анимация не дойдёт до своего диапазона.
+      return;
+    }
+
+    root.classList.add("reveal-ready");
+    if (revealObserver) revealObserver.disconnect();
+    revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-in");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -6% 0px", threshold: 0.04 }
+    );
+    nodes.forEach((el) => revealObserver.observe(el));
+  }
+
+  /* ---------- анимация чисел ---------- */
+
+  function animateNumber(el, to, format) {
+    if (!el) return;
+    const fmt = format || ((value) => `${formatPrice(value)} ₽`);
+    const from = Number(el.dataset.value);
+    const target = Math.trunc(Number(to) || 0);
+
+    // Первое заполнение и отсутствие поддержки — просто пишем число.
+    if (!Number.isFinite(from) || from === target) {
+      el.dataset.value = String(target);
+      el.textContent = fmt(target);
+      return;
+    }
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      el.dataset.value = String(target);
+      el.textContent = fmt(target);
+      return;
+    }
+
+    const duration = 460;
+    const start = performance.now();
+
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      // easeOutCubic: цифры быстро разгоняются и мягко останавливаются.
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = fmt(Math.round(from + (target - from) * eased));
+      if (t < 1) requestAnimationFrame(step);
+      else {
+        el.dataset.value = String(target);
+        el.textContent = fmt(target);
+      }
+    };
+
+    requestAnimationFrame(step);
+  }
+
+  /** Человеческая цена доставки с учётом «бесплатно от N ₽». */
+  function deliveryPriceLabel(method) {
+    if (!method) return "—";
+    if (method.freeOver) return `бесплатно от ${money(method.freeOver)}`;
+    return method.price ? money(method.price) : "бесплатно";
+  }
+
+  /**
+   * Радиогруппы в форме оформления. Показываем только то, что работает
+   * сегодня: способ со статусом planned клиент выбрать не может, а обещать
+   * оплату картой, которой ещё нет, нельзя. Недоступное перечисляем словами
+   * под списком — чтобы подготовка к сервису была видна, но не вводила в
+   * заблуждение.
+   */
+  function renderOptions(targetId, methods, name) {
+    const box = $("#" + targetId);
+    if (!box) return;
+    const live = selectableMethods(methods);
+    const soon = (methods || []).filter((m) => !isLive(m));
+
+    box.innerHTML =
+      live
+        .map(
+          (method, index) => `
+      <label class="option">
+        <input type="radio" name="${name}" value="${escapeHtml(method.key)}"${index === 0 ? " checked" : ""}>
+        <span class="option__text">
+          <span class="option__name">${escapeHtml(method.name)}</span>
+          ${method.desc ? `<span class="option__meta">${escapeHtml(method.desc)}</span>` : ""}
+        </span>
+        ${
+          name === "delivery"
+            ? `<span class="option__price">${escapeHtml(deliveryPriceLabel(method))}</span>`
+            : serviceBadge(method)
+        }
+      </label>`
+        )
+        .join("") +
+      (soon.length
+        ? `<p class="fieldset__soon">Скоро: ${soon.map((m) => escapeHtml(m.name)).join(", ")}.
+             Уже подготовлено, включится после договора с сервисом.</p>`
+        : "");
+  }
+
   /* ---------- отрисовка корзины ---------- */
 
   function renderCart() {
@@ -406,7 +571,11 @@
     const deliveryRow = $("[data-total-delivery]", drawer);
     deliveryRow.hidden = !q.delivery;
     if (q.delivery) {
-      deliveryRow.querySelector("[data-value]").textContent = q.deliveryPrice ? money(q.deliveryPrice) : "бесплатно";
+      deliveryRow.querySelector("[data-value]").textContent = q.deliveryFree
+        ? "бесплатно"
+        : q.deliveryPrice
+          ? money(q.deliveryPrice)
+          : "бесплатно";
     }
 
     $("[data-total-sum]", drawer).textContent = money(q.total);
@@ -434,6 +603,10 @@
 
     const delivery = order.delivery && order.delivery.name ? order.delivery.name : "—";
     const payment = order.payment && order.payment.name ? order.payment.name : "—";
+    // Сервис в заказе нужен менеджеру, чтобы сразу открыть нужный личный
+    // кабинет и не переспрашивать клиента.
+    const deliveryService = order.delivery ? serviceName(order.delivery.service) : "";
+    const paymentService = order.payment ? serviceName(order.payment.service) : "";
 
     const parts = [
       `Заказ с сайта ${DATA.brand || "MARI PARFUM"}`,
@@ -448,8 +621,8 @@
     }
 
     parts.push(
-      `Доставка: ${delivery} — ${order.deliveryPrice ? `${formatPrice(order.deliveryPrice)} ₽` : "бесплатно"}`,
-      `Оплата: ${payment}`,
+      `Доставка: ${delivery}${deliveryService ? ` (${deliveryService})` : ""} — ${order.deliveryPrice ? `${formatPrice(order.deliveryPrice)} ₽` : "бесплатно"}`,
+      `Оплата: ${payment}${paymentService ? ` (${paymentService})` : ""}`,
       `Имя: ${order.name}`,
       `Телефон: ${order.phone}`,
       `Адрес: ${order.address}`
@@ -510,6 +683,7 @@
       comment: String(data.get("comment") || "").trim(),
       delivery: q.delivery,
       deliveryPrice: q.deliveryPrice,
+      deliveryFree: q.deliveryFree,
       payment: paymentMethod(paymentKey),
       items: q.lines.map((line) => ({
         id: line.id,
@@ -545,7 +719,7 @@
             ? `<div class="totals__line totals__line--discount"><span>${escapeHtml(order.discountTitle)}</span><span>− ${escapeHtml(money(order.discount))}</span></div>`
             : ""
         }
-        <div class="totals__line"><span>Доставка · ${escapeHtml(order.delivery ? order.delivery.name : "—")}</span><span>${escapeHtml(order.deliveryPrice ? money(order.deliveryPrice) : "бесплатно")}</span></div>
+        <div class="totals__line"><span>Доставка · ${escapeHtml(order.delivery ? order.delivery.name : "—")}</span><span>${escapeHtml(order.deliveryFree || !order.deliveryPrice ? "бесплатно" : money(order.deliveryPrice))}</span></div>
         <div class="totals__line totals__line--sum"><span>Итого</span><span>${escapeHtml(money(order.total))}</span></div>
       </div>`;
   }
@@ -564,15 +738,20 @@ const errorBox = $("[data-form-error]", sheet);
 
     const submit = $("[data-submit]", form);
 
-    // Итог прямо в форме пересчитывается при смене доставки.
-    $$('input[name="delivery"]', form).forEach((input) => {
-      input.addEventListener("change", () => {
-        const q = quote(input.value);
-        $("[data-form-total]", form).textContent = money(q.total);
-        $("[data-form-delivery-cost]", form).textContent = q.deliveryPrice
-          ? money(q.deliveryPrice)
-          : "бесплатно";
-      });
+    // Итог пересчитывается при смене доставки. Слушатель висит на самой
+    // форме, а не на радиокнопках: на момент загрузки их ещё нет —
+    // renderOptions() рисует их позже, и слушатели по узлам молча терялись бы,
+    // а итог оставался бы от способа по умолчанию.
+    form.addEventListener("change", (event) => {
+      const input = event.target;
+      if (!input || input.name !== "delivery") return;
+      const q = quote(input.value);
+      const cost = $("[data-form-delivery-cost]", form);
+      const total = $("[data-form-total]", form);
+      if (cost) {
+        cost.textContent = q.deliveryFree || !q.deliveryPrice ? "бесплатно" : money(q.deliveryPrice);
+      }
+      if (total) animateNumber(total, q.total);
     });
 
     // Менеджера в поле телефон подставляем, чтобы не вводить вручную.
@@ -644,9 +823,9 @@ const errorBox = $("[data-form-error]", sheet);
         ? "Заказ собран"
         : "Заказ принят";
       $("[data-done-text]", donePanel).textContent =
-        `${DATA.manager ? `@${DATA.manager}` : "Менеджер"} свяжется с вами по телефону ${order.phone}.` +
-        (order.payment && order.payment.key === "sberbank"
-          ? " Для оплаты переводом в Сбербанк мы пришлём реквизиты."
+        `${DATA.manager ? `@${DATA.manager}` : "Менеджер"} свяжется с вами по телефону ${order.phone}. ` +
+        (order.payment && order.payment.hint
+          ? order.payment.hint
           : " Оплата при получении — наличными или картой.");
 
       const tglink = $("[data-done-telegram]", donePanel);
@@ -696,6 +875,14 @@ const errorBox = $("[data-form-error]", sheet);
     deliveryMethod: deliveryMethod,
     paymentMethod: paymentMethod,
     orderText: orderText,
+    deliveryPriceLabel: deliveryPriceLabel,
+    renderOptions: renderOptions,
+    serviceName: serviceName,
+    serviceBadge: serviceBadge,
+    isLive: isLive,
+    selectableMethods: selectableMethods,
+    reveal: reveal,
+    animateNumber: animateNumber,
     telegramLink: telegramLink,
     copyText: copyText,
     toast: toast,
@@ -717,6 +904,7 @@ const errorBox = $("[data-form-error]", sheet);
     wireBackdrop($("#checkout"));
     renderCart();
     onCartChange(renderCart);
+    reveal();
 
     $$("[data-cart-open]").forEach((btn) => {
       btn.addEventListener("click", () => {

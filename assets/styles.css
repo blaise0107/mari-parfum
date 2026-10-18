@@ -1,36 +1,64 @@
 /* =========================================================================
-   MARI PARFUM — витрина
-   Палитра: холодный фарфор, чернильно-зелёный, оксблад.
-   Шрифты: Prata (только крупные заголовки) + Onest (интерфейс).
+   MARI PARFUM — «ателье»
+
+   Глубокая тёплая база, шампанское золото, стекло. Флаконы светятся,
+   фон дышит, цена пересчитывается вслух цифрами.
+
+   Движение живёт только там, где оно отвечает действию человека:
+   наведение, добавление в корзину, открытие окна. Никаких фоновых
+   плясок ради плясок — их всё выключает prefers-reduced-motion.
    ========================================================================= */
 
-:root {
-  --bone: #e9e9e4;
-  --paper: #f6f6f2;
-  --ink: #171d1a;
-  --plum: #6e1e3c;
-  --smoke: #5a655f;
+@property --aurora {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
 
-  --line: color-mix(in srgb, var(--ink) 15%, transparent);
-  --line-soft: color-mix(in srgb, var(--ink) 8%, transparent);
-  --wash: color-mix(in srgb, var(--ink) 4%, transparent);
+@property --pour {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 34%;
+}
+
+:root {
+  --ink: #0b0908;
+  --surface: #14100d;
+  --surface-2: #1c1713;
+  --glass: rgba(255, 246, 234, 0.045);
+  --glass-line: rgba(255, 243, 226, 0.1);
+
+  --champagne: #e9cfa4;
+  --gold: #d9b578;
+  --rose: #c98a76;
+
+  --text: #f4efe7;
+  --muted: #a89c8f;
+  --dim: #7b7168;
 
   --step--1: clamp(0.82rem, 0.8rem + 0.1vw, 0.89rem);
   --step-0: clamp(0.95rem, 0.92rem + 0.15vw, 1.03rem);
   --step-1: clamp(1.12rem, 1.05rem + 0.35vw, 1.3rem);
-  --step-2: clamp(1.35rem, 1.2rem + 0.7vw, 1.75rem);
-  --step-3: clamp(1.7rem, 1.35rem + 1.6vw, 2.8rem);
-  --step-4: clamp(2.4rem, 1.5rem + 4vw, 5rem);
+  --step-2: clamp(1.4rem, 1.22rem + 0.75vw, 1.85rem);
+  --step-3: clamp(1.8rem, 1.35rem + 1.9vw, 2.9rem);
+  --step-4: clamp(2.6rem, 1.5rem + 4.5vw, 5.4rem);
 
   --gutter: clamp(1.15rem, 0.6rem + 2.5vw, 3.5rem);
   --measure: 74ch;
-  --shell: 1220px;
+  --shell: 1240px;
 
-  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --ease: cubic-bezier(0.22, 0.68, 0.24, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.46, 0.64, 1);
   --tap: 48px;
+
+  --glow: 0 0 0 1px rgba(233, 207, 164, 0.14), 0 18px 48px -22px rgba(233, 207, 164, 0.32);
+  --glow-soft: 0 0 90px -30px rgba(233, 207, 164, 0.5);
 
   --font-display: "Prata", "Times New Roman", serif;
   --font-ui: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  color-scheme: dark;
 }
 
 /* ---------- сброс ---------- */
@@ -49,14 +77,56 @@ html {
 
 body {
   margin: 0;
-  background: var(--bone);
-  color: var(--ink);
+  min-height: 100dvh;
+  background: var(--ink);
+  color: var(--text);
   font-family: var(--font-ui);
   font-size: var(--step-0);
   font-weight: 350;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Живой фон: три пятна тёплого света, медленно вращающиеся по градиенту.
+   Размытие дорогое, поэтому фон не анимируется на медленных устройствах. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: -2;
+  background:
+    radial-gradient(38rem 30rem at 18% 8%, rgba(233, 207, 164, 0.15), transparent 62%),
+    radial-gradient(32rem 26rem at 84% 22%, rgba(201, 138, 118, 0.13), transparent 60%),
+    radial-gradient(46rem 34rem at 50% 104%, rgba(217, 181, 120, 0.14), transparent 64%);
+  filter: blur(24px);
+  animation: aurora 42s var(--ease) infinite;
+  will-change: transform;
+}
+
+/* Виньетка и вертикальная шкала — «свет сверху», как в витрине. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 70% at 50% -10%, transparent 45%, rgba(0, 0, 0, 0.55) 100%),
+    linear-gradient(to bottom, transparent 0, rgba(0, 0, 0, 0.28) 45%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+@keyframes aurora {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(12deg) scale(1.12);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
 }
 
 body.is-locked {
@@ -68,7 +138,7 @@ h2,
 h3 {
   margin: 0;
   font-weight: 400;
-  line-height: 1.12;
+  line-height: 1.14;
 }
 
 p {
@@ -101,14 +171,24 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--plum);
+  outline: 2px solid var(--champagne);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 ::selection {
-  background: var(--plum);
-  color: var(--paper);
+  background: var(--champagne);
+  color: var(--ink);
+}
+
+::placeholder {
+  color: var(--dim);
+}
+
+/* Полоса прокрутки — часть темы, а не системный серый. */
+* {
+  scrollbar-color: color-mix(in srgb, var(--champagne) 28%, transparent) transparent;
+  scrollbar-width: thin;
 }
 
 .visually-hidden {
@@ -130,14 +210,59 @@ a {
   padding-inline: var(--gutter);
 }
 
+/* Появление секций при прокрутке.
+
+   Важно: элемент виден по умолчанию. Скрывает его только класс
+   .reveal-ready на <html>, который ставит скрипт. Если JS не запустился,
+   наблюдатель не сработал или браузер не знает IntersectionObserver —
+   каталог всё равно читается, а не исчезает. */
+.reveal-ready .reveal:not(.is-in) {
+  opacity: 0;
+  translate: 0 26px;
+}
+
+.reveal {
+  transition: opacity 0.7s var(--ease-out), translate 0.7s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-in {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Там, где умеет сам браузер, анимацию ведёт CSS без скриптов. */
+@supports (animation-timeline: view()) {
+  .reveal,
+  .reveal-ready .reveal:not(.is-in) {
+    opacity: 1;
+    translate: none;
+    animation: reveal-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 45%;
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    translate: 0 26px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
 .skip-link {
   position: absolute;
   inset-inline-start: var(--gutter);
   inset-block-start: -4rem;
   z-index: 60;
   padding: 0.7rem 1.1rem;
-  background: var(--ink);
-  color: var(--paper);
+  border-radius: 4px;
+  background: var(--champagne);
+  color: var(--ink);
   text-decoration: none;
   transition: inset-block-start 0.2s var(--ease);
 }
@@ -152,35 +277,52 @@ a {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: color-mix(in srgb, var(--bone) 88%, transparent);
-  backdrop-filter: blur(14px) saturate(1.2);
-  border-bottom: 1px solid var(--line-soft);
+  background: color-mix(in srgb, var(--ink) 62%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid var(--glass-line);
 }
 
 .topbar__row {
   display: flex;
   align-items: center;
   gap: clamp(1rem, 3vw, 3rem);
-  min-height: 4.25rem;
+  min-height: 4.5rem;
 }
 
 .wordmark {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.5rem;
+  gap: 0.55rem;
   min-width: 0;
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   letter-spacing: 0.01em;
   text-decoration: none;
   white-space: nowrap;
+  background: linear-gradient(100deg, var(--text) 20%, var(--champagne) 55%, var(--text) 80%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sheen 9s var(--ease) infinite;
+}
+
+@keyframes sheen {
+  0%,
+  100% {
+    background-position: 120% 0;
+  }
+  50% {
+    background-position: -20% 0;
+  }
 }
 
 .wordmark__thin {
   font-family: var(--font-ui);
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--muted);
   letter-spacing: 0.02em;
+  -webkit-text-fill-color: currentColor;
 }
 
 .topbar__nav {
@@ -191,100 +333,107 @@ a {
 }
 
 .topbar__nav a {
-  color: var(--smoke);
-  text-decoration: none;
+  position: relative;
   padding-block: 0.35rem;
-  transition: color 0.18s var(--ease);
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
+}
+
+/* Подчёркивание вырастает из под текста, а не появляется целиком. */
+.topbar__nav a::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--champagne), transparent);
+  scale: 0 1;
+  transition: scale 0.32s var(--ease-out);
 }
 
 .topbar__nav a:hover {
-  color: var(--ink);
+  color: var(--text);
+}
+
+.topbar__nav a:hover::after {
+  scale: 1 1;
 }
 
 @media (max-width: 720px) {
   .topbar__nav {
     display: none;
   }
-
-  /* Липкая полоса фильтров на телефоне съедала бы пол-экрана
-     и перекрывала товар, к которому клиент прокрутил. */
-  .filters {
-    position: static;
-  }
-}
-
-@media (max-width: 640px) {
-  .filters__count {
-    margin-inline-start: 0;
-  }
-
-  /* Два селекта в одну строку: иначе панель фильтров вырастает
-     до четверти экрана телефона. */
-  .filters__row {
-    gap: 0.6rem 0.75rem;
-  }
-
-  .select-field {
-    flex: 1 1 7.5rem;
-    min-width: 0;
-  }
-
-  .select-field select {
-    width: 100%;
-  }
-
-  .search-field {
-    max-width: none;
-    flex-basis: 100%;
-  }
 }
 
 /* ---------- кнопки ---------- */
 
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
   min-height: var(--tap);
-  padding: 0.7rem 1.4rem;
-  border: 1px solid var(--ink);
-  border-radius: 0;
-  background: transparent;
-  color: var(--ink);
+  padding: 0.7rem 1.5rem;
+  overflow: hidden;
+  border: 1px solid var(--glass-line);
+  border-radius: 2px;
+  background: var(--glass);
+  color: var(--text);
   font-size: var(--step-0);
   font-weight: 450;
   letter-spacing: 0.01em;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s var(--ease), color 0.2s var(--ease),
-    border-color 0.2s var(--ease), opacity 0.2s var(--ease);
+  isolation: isolate;
+  transition: border-color 0.25s var(--ease), color 0.25s var(--ease),
+    background-color 0.25s var(--ease), transform 0.25s var(--ease-spring), opacity 0.2s var(--ease);
+}
+
+/* Мягкий блик, пробегающий по кнопке при наведении. */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(14rem 6rem at var(--mx, 50%) var(--my, 50%), rgba(233, 207, 164, 0.3), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
 }
 
 .btn:hover {
-  background: var(--ink);
-  color: var(--paper);
+  border-color: color-mix(in srgb, var(--champagne) 55%, transparent);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.btn:hover::before {
+  opacity: 1;
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.99);
 }
 
 .btn--solid {
-  background: var(--ink);
-  color: var(--paper);
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--champagne), var(--gold));
+  color: #1a1207;
 }
 
 .btn--solid:hover {
-  background: var(--plum);
-  border-color: var(--plum);
+  background: linear-gradient(135deg, #f2dcb6, var(--champagne));
 }
 
 .btn--plum {
-  background: var(--plum);
-  border-color: var(--plum);
-  color: var(--paper);
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--rose), var(--gold));
+  color: #1a1008;
 }
 
 .btn--plum:hover {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: linear-gradient(135deg, #d99a85, #e6c48c);
 }
 
 .btn--wide {
@@ -294,11 +443,7 @@ a {
 .btn[disabled] {
   opacity: 0.45;
   cursor: not-allowed;
-}
-
-.btn[disabled]:hover {
-  background: transparent;
-  color: var(--ink);
+  transform: none;
 }
 
 .cart-button {
@@ -307,14 +452,51 @@ a {
   flex: none;
   align-items: center;
   gap: 0.55rem;
-  margin-inline-start: auto;
   min-height: var(--tap);
-  padding: 0.55rem 1rem;
-  border: 1px solid var(--line);
-  background: var(--paper);
+  margin-inline-start: auto;
+  padding: 0.5rem 0.9rem 0.5rem 1.1rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 2px;
+  background: var(--glass);
   font-size: var(--step--1);
   cursor: pointer;
-  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+  overflow: hidden;
+  transition: border-color 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+
+.cart-button:hover {
+  border-color: color-mix(in srgb, var(--champagne) 50%, transparent);
+  background: color-mix(in srgb, var(--champagne) 8%, transparent);
+}
+
+.cart-button__count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding-inline: 0.35rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--champagne), var(--gold));
+  color: #1a1207;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.cart-button__count[data-empty="true"] {
+  background: var(--glass-line);
+  color: var(--muted);
+}
+
+.cart-button.is-bumped .cart-button__count {
+  animation: bump 0.45s var(--ease-spring);
+}
+
+@keyframes bump {
+  35% {
+    transform: scale(1.35);
+  }
 }
 
 /* Подпись вордмарка — первое, что приносится в жертву узкому экрану:
@@ -325,44 +507,11 @@ a {
   }
 }
 
-.cart-button:hover {
-  border-color: var(--ink);
-}
-
-.cart-button__count {
-  display: inline-grid;
-  place-items: center;
-  min-width: 1.5rem;
-  height: 1.5rem;
-  padding-inline: 0.35rem;
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--paper);
-  font-size: 0.75rem;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-
-.cart-button__count[data-empty="true"] {
-  background: var(--line);
-  color: var(--smoke);
-}
-
-.cart-button.is-bumped {
-  animation: bump 0.4s var(--ease);
-}
-
-@keyframes bump {
-  40% {
-    transform: translateY(-3px);
-  }
-}
-
 /* ---------- витрина-полка ---------- */
 
 .shelf {
+  position: relative;
   padding-block: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 3vw, 3rem);
-  border-bottom: 1px solid var(--line);
 }
 
 .shelf__intro {
@@ -370,67 +519,77 @@ a {
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 1rem 2rem;
+  gap: 1rem 2.5rem;
   margin-bottom: clamp(1.5rem, 4vw, 3rem);
 }
 
 .shelf__title {
-  max-width: 20ch;
+  max-width: 22ch;
   font-family: var(--font-display);
   font-size: var(--step-3);
   text-wrap: balance;
+  background: linear-gradient(170deg, #fdf6ea 10%, var(--champagne) 55%, #b08a58 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 26px rgba(233, 207, 164, 0.18));
 }
 
 .shelf__rule {
-  max-width: 32ch;
-  color: var(--smoke);
+  max-width: 36ch;
+  color: var(--muted);
   font-size: var(--step-0);
+}
+
+.shelf__rule b {
+  color: var(--champagne);
+  font-weight: 450;
 }
 
 .shelf__track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: clamp(88px, 13vw, 132px);
-  gap: clamp(0.75rem, 2vw, 1.75rem);
+  grid-auto-columns: clamp(96px, 13vw, 140px);
+  gap: clamp(0.75rem, 2vw, 1.6rem);
   overflow-x: auto;
-  padding-block-end: 1.25rem;
+  padding-block: 1.5rem 1.25rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
   scroll-snap-type: x proximity;
-  scrollbar-width: thin;
 }
 
 .shelf__item {
   scroll-snap-align: center;
   display: grid;
-  gap: 0.5rem;
+  gap: 0.55rem;
   justify-items: center;
   text-align: center;
-  /* Это ссылка, но подчёркивать подписи флаконов незачем: они и так
-     в блоке с картинкой, а underline ломает ровную линию подписей. */
   text-decoration: none;
 }
 
 .shelf__item .flacon {
   width: 100%;
-  transition: transform 0.45s var(--ease);
+  filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55));
+  transition: transform 0.5s var(--ease-spring), filter 0.5s var(--ease);
 }
 
 .shelf__item:hover .flacon {
-  transform: translateY(-6px);
+  transform: translateY(-10px) scale(1.05);
+  filter: drop-shadow(0 26px 30px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 26px var(--glow-soft));
 }
 
 .shelf__caption {
   display: grid;
   gap: 0.1rem;
+  min-height: 4.2em;
   font-size: 0.72rem;
   line-height: 1.4;
-  color: var(--smoke);
-  /* Подписи разной длины не должны подпрыгивать по высоте при смене флакона. */
-  min-height: 4.2em;
+  color: var(--muted);
 }
 
 .shelf__caption b {
   font-weight: 450;
-  color: var(--ink);
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
@@ -441,12 +600,7 @@ a {
 /* ---------- флакон ---------- */
 
 .flacon {
-  --glass: #dfe3e0;
-  --glass-edge: #b9c2bd;
-  --liquid: #b98a3f;
-  --liquid-deep: #8c6224;
-  --cap: #232a27;
-  --fill: 34%;
+  --level: 0.34;
   position: relative;
   aspect-ratio: 3 / 4.4;
 }
@@ -457,56 +611,50 @@ a {
   overflow: visible;
 }
 
-/* Уровень жидкости растёт снизу вверх: без origin флакон «сжимается» к центру. */
 .flacon__level {
   transform-origin: 50% 100%;
-  transition: transform 0.6s var(--ease);
+  transform: scaleY(var(--level));
+  transition: transform 0.75s var(--ease-spring);
+}
+
+.flacon__shine {
+  transform-origin: 50% 40%;
+  animation: sheen-glass 7s var(--ease) infinite;
+}
+
+@keyframes sheen-glass {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
 }
 
 /* ---------- фильтры ---------- */
 
 .filters {
   position: sticky;
-  top: 4.25rem;
+  top: 4.5rem;
   z-index: 30;
-  padding-block: 1.1rem;
-  background: color-mix(in srgb, var(--bone) 92%, transparent);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line-soft);
+  padding-block: 0.85rem;
+  background: color-mix(in srgb, var(--ink) 70%, transparent);
+  backdrop-filter: blur(16px) saturate(1.3);
+  border-block: 1px solid var(--glass-line);
 }
 
 .filters__row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem 1.25rem;
+  gap: 0.7rem 1.1rem;
 }
 
 .filters__group {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-}
-
-.chip {
-  min-height: 2.5rem;
-  padding: 0.4rem 0.9rem;
-  border: 1px solid var(--line);
-  background: transparent;
-  font-size: var(--step--1);
-  cursor: pointer;
-  transition: border-color 0.18s var(--ease), background-color 0.18s var(--ease),
-    color 0.18s var(--ease);
-}
-
-.chip:hover {
-  border-color: var(--ink);
-}
-
-.chip[aria-pressed="true"] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
 }
 
 .search-field {
@@ -519,14 +667,18 @@ a {
   width: 100%;
   min-height: var(--tap);
   padding: 0.6rem 0.9rem 0.6rem 2.4rem;
-  border: 1px solid var(--line);
-  background: var(--paper);
+  border: 1px solid var(--glass-line);
+  border-radius: 2px;
+  background: var(--glass);
   font-size: var(--step-0);
-  transition: border-color 0.18s var(--ease);
+  transition: border-color 0.22s var(--ease), background-color 0.22s var(--ease), box-shadow 0.22s var(--ease);
 }
 
 .search-field input:focus-visible {
-  border-color: var(--ink);
+  border-color: color-mix(in srgb, var(--champagne) 55%, transparent);
+  background: color-mix(in srgb, var(--champagne) 7%, transparent);
+  box-shadow: 0 0 0 4px rgba(233, 207, 164, 0.08);
+  outline-offset: 0;
 }
 
 .search-field__mark {
@@ -534,15 +686,16 @@ a {
   inset-block-start: 50%;
   inset-inline-start: 0.85rem;
   translate: 0 -50%;
-  color: var(--smoke);
+  color: var(--dim);
   pointer-events: none;
 }
 
 .select-field select {
   min-height: var(--tap);
   padding: 0.6rem 2rem 0.6rem 0.9rem;
-  border: 1px solid var(--line);
-  background: var(--paper);
+  border: 1px solid var(--glass-line);
+  border-radius: 2px;
+  background: var(--glass);
   font-size: var(--step--1);
   appearance: none;
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
@@ -550,23 +703,19 @@ a {
   background-position: right 1rem center, right 0.72rem center;
   background-size: 0.28rem 0.28rem, 0.28rem 0.28rem;
   background-repeat: no-repeat;
+  transition: border-color 0.22s var(--ease);
 }
 
 .select-field select:focus-visible {
-  border-color: var(--ink);
+  border-color: color-mix(in srgb, var(--champagne) 55%, transparent);
+  outline-offset: 0;
 }
 
 .filters__count {
   margin-inline-start: auto;
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
-}
-
-@media (max-width: 640px) {
-  .filters__count {
-    margin-inline-start: 0;
-  }
 }
 
 /* ---------- реестр цен ---------- */
@@ -585,17 +734,21 @@ a {
   justify-content: space-between;
   gap: 1rem;
   padding-block-end: 0.9rem;
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1px solid color-mix(in srgb, var(--champagne) 26%, transparent);
 }
 
 .ledger__heading h2 {
   font-family: var(--font-display);
   font-size: var(--step-2);
+  background: linear-gradient(105deg, var(--text) 35%, var(--champagne));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .ledger__range {
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--dim);
   white-space: nowrap;
 }
 
@@ -604,36 +757,48 @@ a {
 }
 
 .entry {
+  position: relative;
   display: grid;
   grid-template-columns: 5.5rem minmax(0, 1fr) auto;
   align-items: center;
   gap: clamp(0.9rem, 2.5vw, 2rem);
-  padding-block: 1.15rem;
-  border-bottom: 1px solid var(--line-soft);
+  padding: 1.15rem 0.9rem;
+  margin-inline: -0.9rem;
+  border-bottom: 1px solid var(--glass-line);
+  border-radius: 4px;
   text-decoration: none;
-  transition: background-color 0.22s var(--ease);
+  isolation: isolate;
+  transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+/* Стеклянная подложка выезжает снизу по наведению. */
+.entry::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 4px;
+  background: linear-gradient(100deg, rgba(233, 207, 164, 0.1), rgba(233, 207, 164, 0.02));
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
 }
 
 .entry:hover {
-  background: var(--wash);
+  border-bottom-color: transparent;
 }
 
-.entry:hover .entry__name {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1px;
+.entry:hover::before {
+  opacity: 1;
 }
 
 .entry__thumb {
   width: 5.5rem;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.5));
+  transition: transform 0.45s var(--ease-spring);
 }
 
-.entry__thumb .flacon {
-  transition: transform 0.45s var(--ease);
-}
-
-.entry:hover .entry__thumb .flacon {
-  transform: translateY(-4px) scale(1.04);
+.entry:hover .entry__thumb {
+  transform: translateY(-5px) scale(1.06);
 }
 
 .entry__name {
@@ -646,19 +811,22 @@ a {
 .entry__brand {
   display: block;
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--muted);
 }
 
 .entry__notes {
+  display: block;
+  max-width: var(--measure);
   margin-top: 0.45rem;
   font-size: var(--step--1);
   line-height: 1.55;
-  color: var(--smoke);
-  max-width: var(--measure);
+  /* Ноты — второстепенные, но читаемые: на #0b0908 серый #7b7168
+     держит контраст около 4.2:1, а здесь нужно 7:1. */
+  color: var(--muted);
 }
 
 .entry__notes span {
-  color: var(--ink);
+  color: color-mix(in srgb, var(--text) 72%, transparent);
 }
 
 .entry__aside {
@@ -672,11 +840,15 @@ a {
   font-size: var(--step-1);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  background: linear-gradient(120deg, var(--text), var(--champagne));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .entry__unit {
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--dim);
   white-space: nowrap;
 }
 
@@ -684,15 +856,16 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
-  margin-top: 0.3rem;
   min-width: 0;
+  margin-top: 0.3rem;
 }
 
 .tag {
-  padding: 0.1rem 0.45rem;
-  border: 1px solid var(--line);
+  padding: 0.12rem 0.5rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 999px;
   font-size: 0.68rem;
-  color: var(--smoke);
+  color: var(--muted);
   white-space: nowrap;
 }
 
@@ -714,7 +887,6 @@ a {
     text-align: start;
     display: flex;
     align-items: baseline;
-    /* Теги не должны вылезать за правый край на узком экране. */
     flex-wrap: wrap;
     gap: 0.6rem;
     min-width: 0;
@@ -724,9 +896,6 @@ a {
     display: none;
   }
 
-  /* Четыре чипа сегментов в одну строку: иначе панель фильтров
-     занимает на телефоне четверть экрана. В горизонтальную ленту,
-     а не в две строки — как полка флаконов выше. */
   .filters__group {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -736,9 +905,60 @@ a {
 
   .chip {
     flex: none;
-    padding: 0.35rem 0.65rem;
+    padding: 0.35rem 0.7rem;
     font-size: 0.8rem;
   }
+}
+
+@media (max-width: 640px) {
+  .filters__count {
+    margin-inline-start: 0;
+  }
+
+  .filters__row {
+    gap: 0.6rem 0.75rem;
+  }
+
+  .filters {
+    position: static;
+  }
+
+  .select-field {
+    flex: 1 1 7.5rem;
+    min-width: 0;
+  }
+
+  .select-field select {
+    width: 100%;
+  }
+
+  .search-field {
+    max-width: none;
+    flex-basis: 100%;
+  }
+}
+
+.chip {
+  min-height: 2.6rem;
+  padding: 0.4rem 0.95rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 999px;
+  background: transparent;
+  font-size: var(--step--1);
+  cursor: pointer;
+  transition: border-color 0.22s var(--ease), background-color 0.22s var(--ease),
+    color 0.22s var(--ease), transform 0.22s var(--ease-spring);
+}
+
+.chip:hover {
+  border-color: color-mix(in srgb, var(--champagne) 50%, transparent);
+  transform: translateY(-1px);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--champagne), var(--gold));
+  color: #1a1207;
 }
 
 /* ---------- пусто ---------- */
@@ -746,23 +966,27 @@ a {
 .blank {
   padding-block: clamp(3rem, 10vw, 6rem);
   text-align: center;
-  color: var(--smoke);
+  color: var(--muted);
 }
 
 .blank h2 {
+  margin-bottom: 0.75rem;
   font-family: var(--font-display);
   font-size: var(--step-2);
-  color: var(--ink);
-  margin-bottom: 0.75rem;
+  background: linear-gradient(120deg, var(--text), var(--champagne));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* ---------- подвал ---------- */
 
 .footer {
   padding-block: clamp(2.5rem, 6vw, 4rem) 2rem;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--glass-line);
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.35));
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--muted);
 }
 
 .footer__grid {
@@ -773,46 +997,50 @@ a {
 
 .footer__title {
   margin-bottom: 0.7rem;
-  color: var(--ink);
+  color: var(--text);
   font-weight: 450;
 }
 
 .footer__list {
   display: grid;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .footer__list a {
-  color: var(--smoke);
+  width: fit-content;
+  color: var(--muted);
   text-decoration: none;
   border-bottom: 1px solid transparent;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 
 .footer__list a:hover {
-  color: var(--ink);
-  border-bottom-color: var(--line);
+  color: var(--champagne);
+  border-bottom-color: color-mix(in srgb, var(--champagne) 45%, transparent);
 }
 
 .footer__legal {
+  max-width: 72ch;
   margin-top: clamp(2rem, 5vw, 3rem);
   padding-top: 1.25rem;
-  border-top: 1px solid var(--line-soft);
-  max-width: 70ch;
-  line-height: 1.6;
+  border-top: 1px solid var(--glass-line);
+  color: var(--dim);
+  line-height: 1.65;
 }
 
 /* ---------- диалоги ---------- */
 
 dialog {
   padding: 0;
-  border: 0;
-  background: var(--paper);
-  color: var(--ink);
+  border: 1px solid var(--glass-line);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(22px) saturate(1.4);
+  color: var(--text);
 }
 
 dialog::backdrop {
-  background: color-mix(in srgb, var(--ink) 45%, transparent);
-  backdrop-filter: blur(2px);
+  background: rgba(4, 3, 2, 0.62);
+  backdrop-filter: blur(6px);
 }
 
 dialog[open] {
@@ -820,7 +1048,8 @@ dialog[open] {
   flex-direction: column;
 }
 
-dialog .drawer__body {
+.drawer__body,
+.sheet__body {
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -828,14 +1057,15 @@ dialog .drawer__body {
 .drawer {
   margin: 0;
   margin-inline-start: auto;
-  width: min(30rem, 100vw);
+  width: min(31rem, 100vw);
   height: 100dvh;
   max-height: 100dvh;
-  border-inline-start: 1px solid var(--line);
+  border-block: 0;
+  border-inline-end: 0;
   opacity: 1;
   translate: 0 0;
-  transition: opacity 0.28s var(--ease), translate 0.28s var(--ease),
-    display 0.28s allow-discrete, overlay 0.28s allow-discrete;
+  transition: opacity 0.3s var(--ease), translate 0.3s var(--ease),
+    display 0.3s allow-discrete, overlay 0.3s allow-discrete;
 }
 
 .drawer:not([open]) {
@@ -854,25 +1084,23 @@ dialog .drawer__body {
   margin: auto;
   width: min(38rem, calc(100vw - 1.5rem));
   max-height: min(90dvh, 52rem);
-  border: 1px solid var(--line);
   opacity: 1;
-  translate: 0 0;
   scale: 1;
-  transition: opacity 0.25s var(--ease), scale 0.25s var(--ease), translate 0.25s var(--ease),
-    display 0.25s allow-discrete, overlay 0.25s allow-discrete;
+  transition: opacity 0.28s var(--ease), scale 0.28s var(--ease-spring), translate 0.28s var(--ease),
+    display 0.28s allow-discrete, overlay 0.28s allow-discrete;
 }
 
 .sheet:not([open]) {
   opacity: 0;
-  scale: 0.97;
-  translate: 0 12px;
+  scale: 0.96;
+  translate: 0 14px;
 }
 
 @starting-style {
   .sheet[open] {
     opacity: 0;
-    scale: 0.97;
-    translate: 0 12px;
+    scale: 0.96;
+    translate: 0 14px;
   }
 }
 
@@ -883,13 +1111,17 @@ dialog .drawer__body {
   justify-content: space-between;
   gap: 1rem;
   padding: 1.1rem clamp(1.15rem, 3vw, 1.75rem);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--glass-line);
 }
 
 .drawer__title,
 .sheet__title {
   font-family: var(--font-display);
   font-size: var(--step-1);
+  background: linear-gradient(120deg, var(--text), var(--champagne));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .icon-button {
@@ -898,36 +1130,38 @@ dialog .drawer__body {
   width: var(--tap);
   height: var(--tap);
   border: 1px solid transparent;
+  border-radius: 2px;
   background: transparent;
   cursor: pointer;
-  transition: border-color 0.18s var(--ease);
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease), rotate 0.3s var(--ease);
 }
 
 .icon-button:hover {
-  border-color: var(--line);
+  border-color: var(--glass-line);
+  background: var(--glass);
+  rotate: 90deg;
 }
 
 .drawer__foot,
 .sheet__foot {
-  padding: clamp(1.15rem, 3vw, 1.75rem);
-  border-top: 1px solid var(--line);
-  background: var(--paper);
   display: grid;
   gap: 0.85rem;
+  padding: clamp(1.15rem, 3vw, 1.75rem);
+  border-top: 1px solid var(--glass-line);
+  background: color-mix(in srgb, var(--champagne) 4%, transparent);
 }
 
 .sheet__body {
-  overflow-y: auto;
-  padding: clamp(1.15rem, 3vw, 1.75rem);
   display: grid;
   gap: 1.4rem;
-  overscroll-behavior: contain;
+  padding: clamp(1.15rem, 3vw, 1.75rem);
 }
 
 /* ---------- корзина ---------- */
 
 .cart-list {
   display: grid;
+  padding-inline: clamp(1.15rem, 3vw, 1.75rem);
 }
 
 .cart-row {
@@ -936,17 +1170,23 @@ dialog .drawer__body {
   gap: 0.9rem;
   align-items: center;
   padding-block: 1rem;
-  border-bottom: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--glass-line);
 }
 
 .cart-row__thumb {
   width: 3.25rem;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.5));
 }
 
 .cart-row__name {
-  font-weight: 450;
   font-size: var(--step-0);
+  font-weight: 450;
   line-height: 1.3;
+}
+
+.cart-row__meta {
+  font-size: var(--step--1);
+  color: var(--muted);
 }
 
 .cart-row__controls {
@@ -954,11 +1194,6 @@ dialog .drawer__body {
   align-items: center;
   gap: 0.7rem;
   margin-top: 0.55rem;
-}
-
-.cart-row__meta {
-  font-size: var(--step--1);
-  color: var(--smoke);
 }
 
 .cart-row__end {
@@ -970,49 +1205,79 @@ dialog .drawer__body {
 .cart-row__price {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  color: var(--champagne);
 }
 
 .stepper {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--line);
+  border: 1px solid var(--glass-line);
+  border-radius: 2px;
+  background: var(--glass);
 }
 
 .stepper button {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.3rem;
+  height: 2.3rem;
   border: 0;
   background: transparent;
   cursor: pointer;
   font-size: 1rem;
   line-height: 1;
-  transition: background-color 0.16s var(--ease);
+  transition: background-color 0.16s var(--ease), color 0.16s var(--ease);
 }
 
 .stepper button:hover {
-  background: var(--wash);
+  background: color-mix(in srgb, var(--champagne) 16%, transparent);
+  color: var(--champagne);
 }
 
 .stepper output {
-  min-width: 2.25rem;
+  min-width: 2.3rem;
   text-align: center;
   font-size: var(--step--1);
   font-variant-numeric: tabular-nums;
 }
 
 .cart-row__remove {
+  padding: 0.2rem 0;
   border: 0;
   background: transparent;
-  padding: 0.2rem 0;
-  color: var(--smoke);
+  color: var(--dim);
   font-size: var(--step--1);
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
+  transition: color 0.2s var(--ease);
 }
 
 .cart-row__remove:hover {
-  color: var(--plum);
+  color: var(--rose);
+}
+
+.cart-empty {
+  padding: clamp(2.5rem, 8vw, 4rem) 1.5rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.cart-empty p {
+  margin-bottom: 1.25rem;
+}
+
+.promo {
+  padding: 0.85rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--champagne) 30%, transparent);
+  border-radius: 3px;
+  background: linear-gradient(100deg, rgba(233, 207, 164, 0.12), rgba(233, 207, 164, 0.03));
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.promo b {
+  color: var(--champagne);
+  font-weight: 500;
 }
 
 .totals {
@@ -1029,35 +1294,14 @@ dialog .drawer__body {
 
 .totals__line--sum {
   padding-top: 0.5rem;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--glass-line);
   font-size: var(--step-1);
   font-variant-numeric: tabular-nums;
+  color: var(--champagne);
 }
 
 .totals__line--discount {
-  color: var(--plum);
-}
-
-.cart-empty {
-  padding: clamp(2.5rem, 8vw, 4rem) 1.5rem;
-  text-align: center;
-  color: var(--smoke);
-}
-
-.cart-empty p {
-  margin-bottom: 1.25rem;
-}
-
-.promo {
-  padding: 0.85rem 1rem;
-  border: 1px dashed color-mix(in srgb, var(--plum) 45%, transparent);
-  background: color-mix(in srgb, var(--plum) 6%, transparent);
-  font-size: var(--step--1);
-  line-height: 1.5;
-}
-
-.promo b {
-  font-weight: 500;
+  color: var(--rose);
 }
 
 /* ---------- оформление ---------- */
@@ -1069,7 +1313,7 @@ dialog .drawer__body {
 
 .field > label {
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--muted);
 }
 
 .field input,
@@ -1077,78 +1321,113 @@ dialog .drawer__body {
   width: 100%;
   min-height: var(--tap);
   padding: 0.7rem 0.9rem;
-  border: 1px solid var(--line);
-  background: var(--bone);
+  border: 1px solid var(--glass-line);
+  border-radius: 2px;
+  background: var(--glass);
   font-size: 1rem;
-  transition: border-color 0.18s var(--ease);
+  transition: border-color 0.22s var(--ease), background-color 0.22s var(--ease), box-shadow 0.22s var(--ease);
 }
 
 .field textarea {
-  resize: vertical;
   min-height: 5.5rem;
+  resize: vertical;
 }
 
 .field input:focus-visible,
 .field textarea:focus-visible {
-  border-color: var(--ink);
+  border-color: color-mix(in srgb, var(--champagne) 55%, transparent);
+  background: color-mix(in srgb, var(--champagne) 6%, transparent);
+  box-shadow: 0 0 0 4px rgba(233, 207, 164, 0.08);
   outline-offset: 0;
 }
 
 .field input:user-invalid,
 .field textarea:user-invalid {
-  border-color: var(--plum);
+  border-color: color-mix(in srgb, var(--rose) 60%, transparent);
 }
 
 .field__hint {
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--dim);
 }
 
 .fieldset {
+  display: grid;
+  gap: 0.55rem;
   margin: 0;
   padding: 0;
   border: 0;
-  display: grid;
-  gap: 0.55rem;
 }
 
 .fieldset legend {
   padding: 0;
   margin-bottom: 0.5rem;
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--muted);
+}
+
+.fieldset__options {
+  display: grid;
+  gap: 0.55rem;
+}
+
+/* Подсказка про ещё не подключённые способы: честнее, чем прятать их,
+   но она идёт после списка, а не вместо выбора. */
+.fieldset__soon {
+  margin-top: 0.35rem;
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--dim);
+}
+
+.form-stack {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.form-total {
+  margin-block: 1.5rem 1.25rem;
+}
+
+.blank__action {
+  margin-top: 1.25rem;
 }
 
 .option {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.75rem;
   min-height: var(--tap);
-  padding: 0.65rem 0.9rem;
-  border: 1px solid var(--line);
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 3px;
+  background: var(--glass);
   cursor: pointer;
-  transition: border-color 0.18s var(--ease), background-color 0.18s var(--ease);
+  transition: border-color 0.22s var(--ease), background-color 0.22s var(--ease), transform 0.22s var(--ease);
 }
 
 .option:hover {
-  border-color: var(--smoke);
+  border-color: color-mix(in srgb, var(--champagne) 40%, transparent);
+  transform: translateX(2px);
 }
 
 .option:has(input:checked) {
-  border-color: var(--ink);
-  background: var(--wash);
+  border-color: color-mix(in srgb, var(--champagne) 65%, transparent);
+  background: linear-gradient(100deg, rgba(233, 207, 164, 0.14), rgba(233, 207, 164, 0.04));
+  box-shadow: var(--glow);
 }
 
 .option input {
   flex: none;
   width: 1.15rem;
   height: 1.15rem;
-  accent-color: var(--plum);
+  accent-color: var(--champagne);
 }
 
 .option__text {
   display: grid;
   gap: 0.1rem;
+  min-width: 0;
 }
 
 .option__name {
@@ -1157,7 +1436,7 @@ dialog .drawer__body {
 
 .option__meta {
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--muted);
 }
 
 .option__price {
@@ -1165,13 +1444,15 @@ dialog .drawer__body {
   font-size: var(--step--1);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  color: var(--champagne);
 }
 
 .form-error {
   padding: 0.75rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--plum) 40%, transparent);
-  background: color-mix(in srgb, var(--plum) 8%, transparent);
-  color: var(--plum);
+  border: 1px solid color-mix(in srgb, var(--rose) 45%, transparent);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--rose) 12%, transparent);
+  color: #edb3a2;
   font-size: var(--step--1);
 }
 
@@ -1189,24 +1470,29 @@ dialog .drawer__body {
 .order-done__title {
   font-family: var(--font-display);
   font-size: var(--step-2);
+  background: linear-gradient(120deg, var(--text), var(--champagne));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .order-done__text {
-  color: var(--smoke);
   max-width: 46ch;
+  color: var(--muted);
+}
+
+.order-done [data-order-summary] {
+  display: grid;
+  gap: 0.9rem;
+  width: 100%;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--glass-line);
 }
 
 .order-done__actions {
   display: grid;
   gap: 0.6rem;
   width: 100%;
-}
-
-.order-done [data-order-summary] {
-  display: grid;
-  gap: 0.9rem;
-  padding-top: 0.25rem;
-  border-top: 1px solid var(--line);
 }
 
 /* ---------- всплывающее сообщение ---------- */
@@ -1224,26 +1510,28 @@ dialog .drawer__body {
 
 .toast {
   padding: 0.75rem 1.15rem;
-  border: 1px solid var(--ink);
-  background: var(--ink);
-  color: var(--paper);
+  border: 1px solid color-mix(in srgb, var(--champagne) 40%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-2) 92%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--glow);
   font-size: var(--step--1);
   pointer-events: auto;
   opacity: 1;
   translate: 0 0;
-  transition: opacity 0.24s var(--ease), translate 0.24s var(--ease),
-    display 0.24s allow-discrete, overlay 0.24s allow-discrete;
+  transition: opacity 0.26s var(--ease), translate 0.26s var(--ease-spring),
+    display 0.26s allow-discrete, overlay 0.26s allow-discrete;
 }
 
 .toast:not([popover]:popover-open) {
   opacity: 0;
-  translate: 0 8px;
+  translate: 0 12px;
 }
 
 @starting-style {
   .toast:popover-open {
     opacity: 0;
-    translate: 0 8px;
+    translate: 0 12px;
   }
 }
 
@@ -1251,159 +1539,161 @@ dialog .drawer__body {
 
 .crumbs {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   padding-block: 1.25rem;
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--dim);
 }
 
 .crumbs a {
   text-decoration: none;
   border-bottom: 1px solid transparent;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 
 .crumbs a:hover {
-  color: var(--ink);
-  border-bottom-color: var(--line);
+  color: var(--champagne);
+  border-bottom-color: color-mix(in srgb, var(--champagne) 45%, transparent);
 }
 
 .product {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
   gap: clamp(2rem, 5vw, 5rem);
-  padding-block: clamp(1rem, 3vw, 2rem) clamp(3rem, 8vw, 6rem);
   align-items: start;
+  padding-block: clamp(1rem, 3vw, 2rem) clamp(3rem, 8vw, 6rem);
 }
 
 .product__stage {
   position: sticky;
-  top: 6rem;
+  top: 6.5rem;
   display: grid;
   gap: 1.5rem;
   justify-items: center;
 }
 
+/* Сцена: стеклянный подиум со светом сверху и отражением. */
 .product__plinth {
   position: relative;
-  width: min(100%, 27rem);
+  width: min(100%, 28rem);
   padding: clamp(2.25rem, 6vw, 3.5rem) clamp(1.5rem, 4vw, 3rem) clamp(2.5rem, 6vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line-soft);
+  border: 1px solid var(--glass-line);
+  border-radius: 6px;
+  background:
+    radial-gradient(70% 46% at 50% 0%, rgba(233, 207, 164, 0.14), transparent 70%),
+    linear-gradient(to bottom, rgba(255, 246, 234, 0.07), rgba(255, 246, 234, 0.015));
   display: grid;
   place-items: center;
+  overflow: hidden;
 }
 
 .product__plinth::after {
   content: "";
   position: absolute;
-  inset-inline: 12%;
-  inset-block-end: clamp(1rem, 3vw, 2rem);
+  inset-inline: 14%;
+  inset-block-end: clamp(1.1rem, 3vw, 2rem);
   height: 1px;
-  background: var(--line);
+  background: linear-gradient(90deg, transparent, rgba(233, 207, 164, 0.4), transparent);
+}
+
+/* Отражение флакона на «полке». */
+.product__plinth::before {
+  content: "";
+  position: absolute;
+  inset-inline: 20%;
+  inset-block-end: 1.1rem;
+  height: 1.5rem;
+  background: radial-gradient(closest-side, rgba(233, 207, 164, 0.22), transparent 72%);
+  filter: blur(6px);
 }
 
 .product__flacon {
   width: min(68%, 15rem);
-}
-
-/* Факты под флаконом: сцена не должна заканчиваться пустым местом,
-   а покупателю полезно видеть базовую цену и сегмент до кнопки. */
-.facts {
-  width: min(100%, 27rem);
-  margin: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.15rem 1.25rem;
-  font-size: var(--step--1);
-  border-top: 1px solid var(--line);
-  padding-top: 0.9rem;
-}
-
-.facts dt {
-  color: var(--smoke);
-  padding-block: 0.3rem;
-}
-
-.facts dd {
-  margin: 0;
-  text-align: end;
-  padding-block: 0.3rem;
-  font-variant-numeric: tabular-nums;
+  filter: drop-shadow(0 26px 30px rgba(0, 0, 0, 0.6));
 }
 
 .product__ml {
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
 .product__brand {
   font-size: var(--step--1);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--smoke);
+  color: var(--champagne);
 }
 
 .product__name {
-  margin-block: 0.4rem 0.9rem;
+  margin-block: 0.5rem 0.9rem;
   font-family: var(--font-display);
   font-size: var(--step-3);
   text-wrap: balance;
+  background: linear-gradient(165deg, #fdf7ec 10%, var(--champagne) 60%, #a98554 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 24px rgba(233, 207, 164, 0.16));
 }
 
 .product__desc {
   max-width: 46ch;
-  color: var(--smoke);
+  color: var(--muted);
 }
 
+/* Цена считывается цифрами, а не прыгает: см. countTo() в product.js. */
 .product__price {
   margin-block: 1.4rem 0.35rem;
-  font-size: var(--step-3);
   font-family: var(--font-display);
+  font-size: var(--step-3);
   font-variant-numeric: tabular-nums;
+  color: var(--champagne);
 }
 
 .product__per-ml {
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--dim);
 }
 
 .pyramid {
-  margin-top: 1.75rem;
   display: grid;
   gap: 1px;
-  background: var(--line-soft);
-  border-block: 1px solid var(--line);
+  margin-top: 1.75rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 4px;
+  background: var(--glass-line);
+  overflow: hidden;
 }
 
 .pyramid__row {
   display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr);
+  grid-template-columns: 6rem minmax(0, 1fr);
   gap: 1rem;
-  padding-block: 0.85rem;
-  background: var(--bone);
+  padding: 0.85rem 0.95rem;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
 }
 
 .pyramid__key {
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--champagne);
 }
 
 .pyramid__val {
   font-size: var(--step--1);
   line-height: 1.55;
+  color: var(--muted);
 }
-
-/* селектор объёма */
 
 .volumes {
   margin-top: 1.75rem;
 }
 
 .volumes__legend {
-  font-size: var(--step--1);
-  color: var(--smoke);
   margin-bottom: 0.6rem;
+  font-size: var(--step--1);
+  color: var(--muted);
 }
 
 .volumes__list {
@@ -1413,25 +1703,28 @@ dialog .drawer__body {
 }
 
 .volumes__list button {
-  min-width: 4.1rem;
+  min-width: 4.2rem;
   min-height: var(--tap);
-  padding: 0.4rem 0.7rem;
-  border: 1px solid var(--line);
-  background: transparent;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 2px;
+  background: var(--glass);
   cursor: pointer;
   font-variant-numeric: tabular-nums;
-  transition: border-color 0.18s var(--ease), background-color 0.18s var(--ease),
-    color 0.18s var(--ease);
+  transition: border-color 0.22s var(--ease), background-color 0.22s var(--ease),
+    color 0.22s var(--ease), transform 0.22s var(--ease-spring), box-shadow 0.22s var(--ease);
 }
 
 .volumes__list button:hover {
-  border-color: var(--ink);
+  border-color: color-mix(in srgb, var(--champagne) 50%, transparent);
+  transform: translateY(-2px);
 }
 
 .volumes__list button[aria-pressed="true"] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--champagne), var(--gold));
+  color: #1a1207;
+  box-shadow: 0 6px 22px -10px rgba(233, 207, 164, 0.7);
 }
 
 .buy-row {
@@ -1455,28 +1748,50 @@ dialog .drawer__body {
 }
 
 .product__meta {
-  margin-top: 2rem;
   display: grid;
   gap: 0.4rem;
+  margin-top: 2rem;
   font-size: var(--step--1);
-  color: var(--smoke);
+  color: var(--dim);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.15rem 1.25rem;
+  width: min(100%, 28rem);
+  margin: 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--glass-line);
+  font-size: var(--step--1);
+}
+
+.facts dt {
+  padding-block: 0.3rem;
+  color: var(--dim);
+}
+
+.facts dd {
+  margin: 0;
+  padding-block: 0.3rem;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
 }
 
 .related {
   padding-block: clamp(2rem, 5vw, 3.5rem) clamp(3rem, 8vw, 6rem);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--glass-line);
 }
 
 .related__title {
+  margin-bottom: 0.5rem;
   font-family: var(--font-display);
   font-size: var(--step-2);
-  margin-bottom: 0.5rem;
-}
-
-.related__list {
-  display: grid;
-  gap: 0;
-  margin-top: 1.5rem;
+  background: linear-gradient(120deg, var(--text), var(--champagne));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @media (max-width: 900px) {
@@ -1487,27 +1802,203 @@ dialog .drawer__body {
   .product__stage {
     position: static;
   }
-
-  .product__plinth {
-    width: 100%;
-  }
 }
-
-/* ---------- мелочи ---------- */
 
 .notfound {
   display: grid;
   gap: 1.25rem;
   justify-items: start;
-  padding-block: clamp(4rem, 14vw, 9rem);
   max-width: 40ch;
+  padding-block: clamp(4rem, 14vw, 9rem);
 }
 
 .notfound h1 {
   font-family: var(--font-display);
   font-size: var(--step-4);
   line-height: 1;
+  background: linear-gradient(140deg, #fdf7ec, var(--champagne) 60%, #a98554);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
+
+/* ---------- переходы между страницами ---------- */
+
+/* Нативный View Transitions: каталог и товар перетекают друг в друга,
+   а не мигают. Там, где API нет, страница просто загружается. */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: vt-out 0.22s var(--ease) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: vt-in 0.32s var(--ease-out) both;
+  }
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    translate: 0 -10px;
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+}
+
+/* Блик пробегает по всей странице один раз при загрузке. */
+@keyframes page-sheen {
+  0% {
+    opacity: 0;
+    translate: -30% 0;
+  }
+  35% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    translate: 130% 0;
+  }
+}
+
+.page-sheen {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 42%, rgba(233, 207, 164, 0.09) 50%, transparent 58%);
+  animation: page-sheen 1.5s var(--ease-out) 1 both;
+}
+
+/* ---------- доставка и оплата ---------- */
+
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: clamp(2rem, 5vw, 3.5rem);
+  padding-block: clamp(1.75rem, 4vw, 2.5rem) clamp(3rem, 7vw, 5rem);
+}
+
+.services__title {
+  margin-bottom: 1.1rem;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  color: var(--champagne);
+}
+
+.services__list {
+  display: grid;
+  gap: 1rem;
+}
+
+.services__item {
+  display: grid;
+  gap: 0.35rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--glass-line);
+}
+
+.services__item:last-child {
+  border-bottom: 0;
+}
+
+.services__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.services__name {
+  font-weight: 450;
+}
+
+.services__cost {
+  margin-inline-start: auto;
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--champagne);
+}
+
+.services__desc {
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Подготовленный, но ещё не подключённый способ: видно, что он будет,
+   и при этом не выглядит как работающий. */
+.services__item--planned {
+  opacity: 0.72;
+}
+
+.services__item--planned .services__name {
+  color: var(--muted);
+}
+
+.services__steps {
+  display: grid;
+  gap: 0.6rem;
+  counter-reset: step;
+  font-size: var(--step--1);
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.services__steps li {
+  position: relative;
+  padding-inline-start: 1.9rem;
+  counter-increment: step;
+}
+
+.services__steps li::before {
+  content: counter(step);
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.05rem;
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--champagne) 45%, transparent);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  color: var(--champagne);
+}
+
+.services__note {
+  margin-top: 1.25rem;
+  padding: 0.75rem 0.9rem;
+  border-inline-start: 2px solid color-mix(in srgb, var(--champagne) 50%, transparent);
+  background: color-mix(in srgb, var(--champagne) 5%, transparent);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Метка внешнего сервиса: ЮKassa, СДЭК, Boxberry. */
+.badge {
+  padding: 0.12rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--champagne) 40%, transparent);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: var(--champagne);
+  white-space: nowrap;
+}
+
+.badge--planned {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--muted) 45%, transparent);
+  color: var(--muted);
+}
+
+/* ---------- мелочи ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -1520,5 +2011,14 @@ dialog .drawer__body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    translate: none;
+  }
+
+  .page-sheen {
+    display: none;
   }
 }
