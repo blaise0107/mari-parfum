@@ -1,15 +1,29 @@
 /* =========================================================================
-   Флаконы — presentation.
+   Оформление: слой поверх styles.css.
 
-   Файл намеренно отдельный от styles.css: правится только то, что связано с
-   флаконами, и не срастается с чужой правкой того же экрана. Подключается
-   последним, поэтому при равной специфичности побеждает здесь.
+   Файл отдельный от styles.css не из любви к порядку, а чтобы не спорить с
+   чужой правкой того же экрана. Подключается последним, поэтому при равной
+   специфичности побеждает здесь.
 
-   Главное, что здесь происходит: тень под флаконом теперь рисует сам SVG
-   (контактная тень, пятно на «полу», ореол от жидкости). Старый
-   `filter: drop-shadow(...)` на элементе лежал поверх и давал второе тёмное
-   пятно — флакон выглядел подвешенным. Теперь это мягкое свечение: аромат
-   светится изнутри, а не висит в темноте.
+   Четыре предмета ведения:
+
+   1. Флаконы. Тень под бутылкой теперь рисует сам SVG (контактная тень,
+      пятно на «полу», ореол от жидкости). Старый `filter: drop-shadow(...)`
+      лежал поверх и давал второе тёмное пятно — флакон выглядел подвешенным.
+      Теперь это мягкое свечение: аромат светится изнутри.
+
+   2. Типографика. Prata — самая частая «люксовая» гарнитура в сгенерированных
+      страницах; Cormorant Garamond волосяными штрихами сразу отстраивается
+      от шаблона. Кириллица в гарнитуре есть, проверено.
+
+   3. Снятие примет, которые выдают шаблон: градиентная обрезка текста на
+      заголовках (легитимность слова зависит от того, как перенёсся перенос
+      строки), ALL-CAPS над названием, появление каждой из девятнадцати строк
+      реестра.
+
+   4. Переключатель объёма на полке — см. assets/shelf.js.
+
+   Всё, что здесь описано, можно удалить целиком: сайт останется рабочим.
    ========================================================================= */
 
 /* ---------- флакон ---------- */
@@ -40,7 +54,7 @@
 
 /* Блик на стекле больше не мигает сам по себе: старая анимация sheen-glass
    жила на классе, которого в разметке теперь нет. Если она вернётся —
-   пусть только по наведению, а не в фоне у всех девятнадцати флаконов. */
+   пусть только по наведению, а не в фоне у всех флаконов. */
 .flacon__shine {
   animation: none;
 }
@@ -51,6 +65,123 @@
   inset-block-end: 0.9rem;
   height: 1.1rem;
   opacity: 0.55;
+}
+
+/* ---------- типографика ---------- */
+
+:root {
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+}
+
+/* Cormorant ниже x-height, чем Prata, поэтому заголовки первого экрана
+   и карточки товара набраны на пару ступеней крупнее — иначе строка
+   рассыпается и читается как водяной знак. */
+.shelf__title {
+  font-size: clamp(2.05rem, 1.4rem + 2.6vw, 3.5rem);
+  line-height: 1.05;
+  /* Сплошной цвет вместо background-clip: text: у градиента яркость слова
+     зависела от того, где именно лёг перенос строки. */
+  background: none;
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  color: var(--champagne);
+  filter: drop-shadow(0 4px 22px rgba(233, 207, 164, 0.14));
+}
+
+.product__name {
+  font-size: clamp(2.2rem, 1.5rem + 2.8vw, 3.7rem);
+  line-height: 1.05;
+  background: none;
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  color: var(--champagne);
+  filter: drop-shadow(0 4px 20px rgba(233, 207, 164, 0.13));
+}
+
+/* Над названием остаётся строка бренда — это иерархия, а не служебная метка.
+   Без ALL-CAPS и разрядки она перестаёт быть «eyebrow» из шаблона. */
+.product__brand {
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+}
+
+/* ---------- переключатель объёма ---------- */
+
+/* Это не фильтр, а параметр заказа, поэтому он не должен выглядеть как
+   фильтр: чипы сегментов — скруглённые пилюли, объёмы — голые числа
+   с подчёркиванием. Разные роли — разный вид. */
+.decant {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem 1.15rem;
+  margin-block: 0 clamp(0.4rem, 1.5vw, 0.9rem);
+  padding-block: 0.85rem;
+  border-block: 1px solid var(--glass-line);
+}
+
+.decant__label {
+  font-size: var(--step--1);
+  color: var(--dim);
+}
+
+.decant__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 1.15rem;
+}
+
+.decant__sizes button {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 0.3rem 0 0.35rem;
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  line-height: 1.1;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+
+.decant__sizes button:hover {
+  color: var(--text);
+}
+
+.decant__sizes button[aria-pressed="true"] {
+  color: var(--champagne);
+  border-bottom-color: var(--champagne);
+}
+
+.decant__sizes button:focus-visible {
+  outline: 2px solid var(--champagne);
+  outline-offset: 4px;
+}
+
+.decant__note {
+  margin: 0 0 0 auto;
+  font-size: var(--step--1);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- появление ---------- */
+
+/* Появление — по секциям, а не по каждой строке реестра. Девятнадцать
+   карточек, въезжающих по очереди, читаются как шаблон; три секции — нет.
+   Начальное состояние всё равно видимо: `.reveal:not(.is-in)` гасит
+   элемент только при работающем наблюдателе. */
+.ledger .entry.reveal,
+.ledger .entry.reveal:not(.is-in) {
+  opacity: 1;
+  translate: none;
+  transition: none;
+  animation: none;
 }
 
 /* ---------- кнопка «в корзину» ---------- */
@@ -64,4 +195,13 @@
 .buy-row .btn {
   flex: 1 1 12rem;
   white-space: nowrap;
+}
+
+/* ---------- движение ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .decant__sizes button,
+  .flacon__level {
+    transition: none;
+  }
 }

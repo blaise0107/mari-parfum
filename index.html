@@ -12,12 +12,12 @@
 <meta property="og:url" content="https://blaise0107.github.io/mari-parfum/">
 <meta property="og:title" content="MARI PARFUM — парфюмерия по миллилитрам">
 <meta property="og:description" content="Ароматы от 500 ₽ за 10 мл. Объём от 10 до 100 мл, доставка СДЭК, Boxberry, Почтой России, своим курьером по Дрезне.">
-<link rel="icon" href="assets/favicon.svg?v=34a1b04f" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.svg?v=aa313467" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Onest:wght@300;400;500;600&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=34a1b04f">
-<link rel="stylesheet" href="assets/flacons.css?v=34a1b04f">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Onest:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="assets/styles.css?v=aa313467">
+<link rel="stylesheet" href="assets/flacons.css?v=aa313467">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -292,9 +292,12 @@
 
 <div class="toast-area"></div>
 
-<script src="assets/catalog.js?v=34a1b04f"></script>
-<script src="assets/flacon.js?v=34a1b04f"></script>
-<script src="assets/app.js?v=34a1b04f"></script>
-<script src="assets/home.js?v=34a1b04f"></script>
+<script src="assets/catalog.js?v=aa313467"></script>
+<script src="assets/flacon.js?v=aa313467"></script>
+<script src="assets/app.js?v=aa313467"></script>
+<!-- shelf.js подключён ДО home.js: он подменяет MPFlacon.shelf на время
+     первого рендера полки. Порядок важен, комментарий не удалять. -->
+<script src="assets/shelf.js?v=aa313467"></script>
+<script src="assets/home.js?v=aa313467"></script>
 </body>
 </html>
