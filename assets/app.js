@@ -14,11 +14,14 @@
 
   /* Адрес, на который сайт отправляет заказ. Пусто — заказ уходит
      открытым текстом в чат менеджера (это рабочий вариант по умолчанию,
-     он не требует ни сервера, ни токена в браузере). */
+     он не требует ни сервера, ни токена в браузере).
+
+     Пока адрес не задан, заказ НИКУДА не уходит: он живёт только текстом в
+     поле. Поэтому оформление не имеет права обещать «заказ принят» —
+     клиент должен сам отправить его в Telegram или скопировать. */
   const ORDER_ENDPOINT = "";
 
   const CART_KEY = "mari-parfum.cart.v1";
-  const LAST_ORDER_KEY = "mari-parfum.last-order.v1";
 
   /* ---------- мелкие утилиты ---------- */
 
@@ -236,12 +239,22 @@
     return { amount: Math.floor((total * promo.percent) / 100), promo: promo };
   }
 
+  /**
+   * Способ доставки по ключу.
+   *
+   * Запасной вариант — первый ДОСТУПНЫЙ способ, а не просто первый в
+   * списке: первый может быть помечен «Скоро», и тогда в корзине посчиталась
+   * бы цена доставки, которую клиент выбрать не может.
+   */
   function deliveryMethod(key) {
-    return (DATA.delivery || []).find((m) => m.key === key) || (DATA.delivery || [])[0] || null;
+    const list = DATA.delivery || [];
+    return list.find((m) => m.key === key) || list.find(isLive) || list[0] || null;
   }
 
+  /** Способ оплаты — по той же логике, что и доставка. */
   function paymentMethod(key) {
-    return (DATA.payment || []).find((m) => m.key === key) || (DATA.payment || [])[0] || null;
+    const list = DATA.payment || [];
+    return list.find((m) => m.key === key) || list.find(isLive) || list[0] || null;
   }
 
   /** Полная смета: сумма товаров, скидка, доставка, итого. */
@@ -537,7 +550,10 @@
             <span class="flacon">${window.MPFlacon.render(product, { ml: line.ml, volumes: volumesFor(product), label: false })}</span>
           </a>
           <div>
-            <div class="cart-row__name">${escapeHtml(product.name)}</div>
+            <!-- Ссылка, а не div: с клавиатуры до позиции корзины
+                 иначе не дойти, а по названию аромата переход на страницу
+                 товара — самый естественный ход покупателя. -->
+            <a class="cart-row__name" href="${escapeHtml(productHref(product))}">${escapeHtml(product.name)}</a>
             <div class="cart-row__meta">${escapeHtml(segmentName(product.segment))} · ${escapeHtml(line.ml)} мл · ${escapeHtml(money(line.unit))} за флакон</div>
             <div class="cart-row__controls">
               <div class="stepper">
@@ -555,7 +571,7 @@
       })
       .join("");
 
-    const deliveryKey = drawer.dataset.delivery || (DATA.delivery[0] && DATA.delivery[0].key) || "";
+    const deliveryKey = drawer.dataset.delivery || (deliveryMethod("") || {}).key || "";
     const q = quote(deliveryKey);
 
     $("[data-total-items]", drawer).textContent = money(q.itemsTotal);
@@ -810,47 +826,67 @@ const errorBox = $("[data-form-error]", sheet);
             body: JSON.stringify(order),
           });
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          showDone(order);
+        } else {
+          // Приёмника заказов нет — значит заказ НИКУДА не ушёл, он живёт
+          // только текстом в поле. Обещать «принят» здесь нельзя: клиент
+          // будет ждать звонка менеджера, которого не будет.
+          showDone(order, {
+            notice:
+              "Заказ пока не отправлен — сайт работает без сервера и не умеет " +
+              "отправлять заказы сам. Нажмите «Отправить в Telegram» или " +
+              "скопируйте заказ и отправьте его менеджеру.",
+          });
         }
-        showDone(order);
       } catch (e) {
         // Сеть или сервер упали — заказ всё равно не должен потеряться:
         // показываем ссылку в Telegram и копирование текста.
-        showDone(order, e.message || "не удалось отправить автоматически");
+        showDone(order, {
+          notice: `Автоматическая отправка не прошла (${escapeHtml(
+            e.message || "не удалось отправить автоматически"
+          )}). Отправьте заказ кнопкой ниже или скопируйте текст.`,
+        });
       } finally {
         submit.disabled = false;
         submit.textContent = "Оформить заказ";
       }
     });
 
-    function showDone(order, problem) {
+    /**
+     * Экран «готово».
+     *
+     * failure — значит, заказ до менеджера НЕ дошёл (нет приёмника или
+     * отправка сорвалась). Тогда обещать «заказ принят» нельзя: клиент
+     * ждёт звонка, которого не будет, пока он сам не отправит заказ.
+     */
+    function showDone(order, failure) {
       const text = orderText(order);
-      try {
-        localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(order));
-      } catch (e) {
-        /* не критично */
-      }
       clearCart();
 
       renderCheckoutSummary(summary, order);
       formPanel.hidden = true;
       donePanel.hidden = false;
 
+      const manager = DATA.manager ? `@${DATA.manager}` : "Менеджер";
+      const paymentHint =
+        order.payment && order.payment.hint
+          ? order.payment.hint
+          : "Оплата при получении — наличными или картой.";
+
       const notice = $("[data-done-notice]", donePanel);
-      if (problem) {
+      if (failure) {
         notice.hidden = false;
-        notice.innerHTML = `Автоматическая отправка не прошла (${escapeHtml(problem)}). Отправьте заказ кнопкой ниже или скопируйте текст.`;
+        notice.innerHTML = failure.notice;
       } else {
         notice.hidden = true;
       }
 
-      $("[data-done-title]", donePanel).textContent = problem
-        ? "Заказ собран"
-        : "Заказ принят";
-      $("[data-done-text]", donePanel).textContent =
-        `${DATA.manager ? `@${DATA.manager}` : "Менеджер"} свяжется с вами по телефону ${order.phone}. ` +
-        (order.payment && order.payment.hint
-          ? order.payment.hint
-          : " Оплата при получении — наличными или картой.");
+      $("[data-done-title]", donePanel).textContent = failure ? "Заказ собран" : "Заказ принят";
+      $("[data-done-text]", donePanel).textContent = failure
+        ? `Заказ собран, но ещё не отправлен менеджеру. Отправьте его в Telegram ` +
+          `или скопируйте — ${manager} перезвонит на ${order.phone} и подтвердит наличие. ` +
+          paymentHint
+        : `${manager} свяжется с вами по телефону ${order.phone}. ${paymentHint}`;
 
       const tglink = $("[data-done-telegram]", donePanel);
       const href = telegramLink(text);

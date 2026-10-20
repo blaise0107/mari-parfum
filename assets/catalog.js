@@ -19,19 +19,19 @@ window.MP_DATA = {
       "key": "luxury",
       "name": "Люкс",
       "emoji": "💎",
-      "range": "от 1200₽"
+      "range": "500–800 ₽"
     },
     {
       "key": "middle",
       "name": "Средний сегмент",
       "emoji": "✨",
-      "range": "600–1200₽"
+      "range": "500–600 ₽"
     },
     {
       "key": "budget",
       "name": "Бюджетный",
       "emoji": "🌸",
-      "range": "до 600₽"
+      "range": "от 500 ₽"
     }
   ],
   "products": [
@@ -219,7 +219,7 @@ window.MP_DATA = {
       "id": "m007",
       "slug": "limperatrice-3",
       "name": "L'Imperatrice 3",
-      "brand": "Dolce & Gabbana",
+      "brand": "Dolce \u0026 Gabbana",
       "segment": "middle",
       "segmentName": "Средний сегмент",
       "baseMl": 10,
@@ -345,7 +345,7 @@ window.MP_DATA = {
       "id": "b004",
       "slug": "the-one-sport",
       "name": "The One Sport",
-      "brand": "Dolce & Gabbana",
+      "brand": "Dolce \u0026 Gabbana",
       "segment": "budget",
       "segmentName": "Бюджетный",
       "baseMl": 10,

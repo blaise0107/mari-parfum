@@ -21,6 +21,11 @@
 
     // На полке — по одному флакону на бренд: девятнадцать почти одинаковых
     // бутылок подряд не читаются, а бренды — читаются.
+    //
+    // Каждый флакон лежит в своём role="listitem": роль list требует, чтобы
+    // детьми списка были именно элементы списка, а не ссылки. Поэтому ссылка
+    // вложена в обёртку — иначе скринридер объявил бы «полка», а позицию
+    // («3 из 11») не сообщил бы.
     const seen = new Set();
     const picks = [];
     for (const product of MP.products) {
@@ -33,10 +38,12 @@
       .slice(0, 14)
       .map(
         (product) => `
-      <a class="shelf__item" href="${MP.escapeHtml(MP.productHref(product))}">
-        <span class="flacon">${window.MPFlacon.shelf(product)}</span>
-        <span class="shelf__caption"><b>${MP.escapeHtml(product.name)}</b><span>${MP.escapeHtml(product.brand)}</span></span>
-      </a>`
+      <div class="shelf__slot" role="listitem">
+        <a class="shelf__item" href="${MP.escapeHtml(MP.productHref(product))}">
+          <span class="flacon">${window.MPFlacon.shelf(product)}</span>
+          <span class="shelf__caption"><b>${MP.escapeHtml(product.name)}</b><span>${MP.escapeHtml(product.brand)}</span></span>
+        </a>
+      </div>`
       )
       .join("");
   }
@@ -184,19 +191,17 @@
 
   /* ---------- доставка и оплата ---------- */
 
-  /** Человеческая цена доставки с учётом «бесплатно от N ₽». */
-  function deliveryPriceLabel(method) {
-    if (!method) return "—";
-    if (method.freeOver) return `бесплатно от ${MP.money(method.freeOver)}`;
-    return method.price ? MP.money(method.price) : "бесплатно";
-  }
-
   function methodMarkup(method, kind) {
     const tags = (method.tags || [])
       .map((tag) => `<span class="tag">${MP.escapeHtml(tag)}</span>`)
       .join("");
     const desc = method.desc ? `<span class="services__desc">${MP.escapeHtml(method.desc)}</span>` : "";
-    const cost = kind === "delivery" ? `<span class="services__cost">${MP.escapeHtml(deliveryPriceLabel(method))}</span>` : "";
+    // Подпись о цене доставки — одна на весь сайт (MP.deliveryPriceLabel),
+    // иначе витрина и корзина со временем начнут считать по-разному.
+    const cost =
+      kind === "delivery"
+        ? `<span class="services__cost">${MP.escapeHtml(MP.deliveryPriceLabel(method))}</span>`
+        : "";
     return `
       <li class="services__item${MP.isLive(method) ? "" : " services__item--planned"}">
         <span class="services__top">

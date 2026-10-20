@@ -182,7 +182,7 @@
       </div>
 
       <div class="product__meta">
-        <span>Цена считается от базовых 10 мл: ${MP.escapeHtml(MP.money(product.basePrice))} за ${product.baseMl} мл.</span>
+        <span>Цена считается от базовых ${product.baseMl} мл: ${MP.escapeHtml(MP.money(product.basePrice))} за ${product.baseMl} мл.</span>
         <span>Наличие и срок подтверждает менеджер по телефону.</span>
         <span>Оригинальная парфюмерия, разлив в фабричный флакон.</span>
       </div>
@@ -217,8 +217,6 @@
     crumbs();
     related();
 
-    MP.renderOptions("delivery-options", MP.data.delivery, "delivery");
-    MP.renderOptions("payment-options", MP.data.payment, "payment");
     MP.reveal();
   }
 

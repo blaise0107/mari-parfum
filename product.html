@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Аромат — MARI PARFUM</title>
-<meta name="description" content="Оригинальная парфюмерия по миллилитрам в MARI PARFUM.">
+<meta name="description" content="MARI PARFUM — парфюмерия по миллилитрам: Maison Francis Kurkdjian, Tom Ford, Prada и другие дома. От 500 ₽ за 10 мл, объём от 10 до 100 мл. Город: Павлоский посад, Московская область.">
 <meta name="theme-color" content="#0b0908">
 <meta name="color-scheme" content="dark">
-<link rel="icon" href="assets/favicon.svg?v=b2e096c3" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.svg?v=244ab3fb" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Onest:wght@300;400;500;600&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=b2e096c3">
-<link rel="stylesheet" href="assets/flacons.css?v=b2e096c3">
+<link rel="stylesheet" href="assets/styles.css?v=244ab3fb">
+<link rel="stylesheet" href="assets/flacons.css?v=244ab3fb">
 </head>
 <body>
 
@@ -29,7 +29,7 @@
       <a href="./#contacts">Контакты</a>
     </nav>
     <div class="topbar__actions">
-    <a class="tg-link" data-bot-link href="#" target="_blank" rel="noopener"
+    <a class="tg-link" data-bot-link href="https://t.me/Authentification_RZE_bot" target="_blank" rel="noopener"
        aria-label="Написать боту в Telegram" title="Бот-консультант в Telegram">
       <svg class="tg-link__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path fill="currentColor" d="M21.6 4.2 2.9 11.3c-.9.35-.9 1.6.02 1.9l4.4 1.5 1.7 5.2c.25.75 1.2.9 1.7.28l2.5-2.9 4.6 3.4c.65.5 1.6.13 1.8-.7l3.4-13.9c.2-.85-.7-1.55-1.5-1.1zM9.2 13.6l9.3-5.9-7.5 6.6-.3 3.2-1.5-3.9z"/>
@@ -44,8 +44,22 @@
   </div>
 </header>
 
+<!-- Страница товара тоже рисует скрипт: без JavaScript останется пустое
+     место. Контакты лежат в разметке, их подставляет tools/build-data.mjs. -->
+<noscript>
+  <div class="noscript">
+    <p class="noscript__title">Каталог и корзина работают на JavaScript</p>
+    <p>Включите JavaScript — витрина покажет все 19 ароматов, цены и способы доставки. А пока можно связаться напрямую:</p>
+    <ul class="noscript__list">
+      <li>Телефон: <a href="tel:+79366007345">+7 936 600-73-45</a></li>
+      <li>Бот в Telegram: <a href="https://t.me/Authentification_RZE_bot" target="_blank" rel="noopener">@Authentification_RZE_bot</a></li>
+      <li>Менеджер: <a href="https://t.me/Mari13011" target="_blank" rel="noopener">@Mari13011</a></li>
+    </ul>
+  </div>
+</noscript>
+
 <!-- Плавающая кнопка — только на телефоне, где шапка не в поле зрения. -->
-<a class="tg-float" data-bot-link href="#" target="_blank" rel="noopener"
+<a class="tg-float" data-bot-link href="https://t.me/Authentification_RZE_bot" target="_blank" rel="noopener"
    aria-label="Написать боту в Telegram" title="Написать боту в Telegram">
   <svg class="tg-float__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
     <path fill="currentColor" d="M21.6 4.2 2.9 11.3c-.9.35-.9 1.6.02 1.9l4.4 1.5 1.7 5.2c.25.75 1.2.9 1.7.28l2.5-2.9 4.6 3.4c.65.5 1.6.13 1.8-.7l3.4-13.9c.2-.85-.7-1.55-1.5-1.1zM9.2 13.6l9.3-5.9-7.5 6.6-.3 3.2-1.5-3.9z"/>
@@ -64,10 +78,7 @@
 
 <footer class="footer" id="contacts">
   <div class="shell">
-    <p class="footer__legal">
-      Стоимость объёма считается от базовых 10 мл. Заказы обрабатывает менеджер
-      вручную, наличие конкретного объёма подтверждается при звонке.
-    </p>
+    <p class="footer__legal">Цены на сайте совпадают с ценами бота магазина: стоимость объёма считается от базовых 10 мл. Акция «Скидка 5% на первый заказ» начисляется на сумму товаров при заказе от 3 000 ₽. Заказы обрабатывает менеджер вручную, поэтому наличие конкретного объёма подтверждается при звонке.</p>
   </div>
 </footer>
 
@@ -178,9 +189,9 @@
 
 <div class="toast-area"></div>
 
-<script src="assets/catalog.js?v=b2e096c3"></script>
-<script src="assets/flacon.js?v=b2e096c3"></script>
-<script src="assets/app.js?v=b2e096c3"></script>
-<script src="assets/product.js?v=b2e096c3"></script>
+<script src="assets/catalog.js?v=244ab3fb"></script>
+<script src="assets/flacon.js?v=244ab3fb"></script>
+<script src="assets/app.js?v=244ab3fb"></script>
+<script src="assets/product.js?v=244ab3fb"></script>
 </body>
 </html>
