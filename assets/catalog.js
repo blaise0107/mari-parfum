@@ -4,13 +4,14 @@ window.MP_DATA = {
   "brand": "MARI PARFUM",
   "manager": "Mari13011",
   "botUsername": "Authentification_RZE_bot",
-  "siteUrl": "https://blaise0107.github.io/mari-parfum/",
+  "siteUrl": "https://blaise0107.github.io/mari-parfum",
   "phone": "+79366007345",
   "volumes": [
     10,
     20,
     30,
     50,
+    80,
     100
   ],
   "segments": [
