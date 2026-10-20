@@ -167,9 +167,13 @@ for (const segment of segmentOrder) {
 const PLACEHOLDER = /^(new|test|tests|none|null|-|без|нет)$/i;
 
 function normalizeMethod(raw) {
+  const name = String(raw.name ?? "").trim();
   return {
-    key: String(raw.key ?? ""),
-    name: String(raw.name ?? "").trim(),
+    key: String(raw.key ?? "").trim(),
+    // Способ без названия не исчезает: название становится ключом. Так же
+    // поступает и Python, иначе витрина и бот показывают разное число
+    // способов.
+    name: name || String(raw.key ?? "").trim(),
     desc: String(raw.desc ?? "").trim(),
     emoji: String(raw.emoji ?? "").trim(),
     price: Math.max(0, asInt(raw.price)),
@@ -190,11 +194,23 @@ function normalizeMethod(raw) {
  * от суммы берутся отсюда же, а не из отдельной настройки сайта.
  */
 function methods(list) {
-  return (Array.isArray(list) ? list : [])
-    .filter((m) => m && typeof m === "object")
-    .map(normalizeMethod)
-    .filter((m) => m.key && m.name && !PLACEHOLDER.test(m.name) && !PLACEHOLDER.test(m.key))
-    .sort((a, b) => a.order - b.order || a.key.localeCompare(b.key));
+  // Правило чистки — ТО ЖЕ, что в store_schema.clean_methods. Это вторая
+  // реализация одного правила на двух языках, и они разошлись: Python
+  // оставляет способ без названия (подставляя ключ) и отбрасывает
+  // повторяющиеся ключи, а здесь способ без названия просто исчезал, а
+  // дубликаты оставались оба. На витрине появлялись два одинаковых способа
+  // там, где бот показывал один.
+  const seen = new Set();
+  const out = [];
+  for (const raw of Array.isArray(list) ? list : []) {
+    if (!raw || typeof raw !== "object") continue;
+    const m = normalizeMethod(raw);
+    if (!m.key || seen.has(m.key)) continue;
+    if (PLACEHOLDER.test(m.key) || PLACEHOLDER.test(m.name)) continue;
+    seen.add(m.key);
+    out.push(m);
+  }
+  return out.sort((a, b) => a.order - b.order || a.key.localeCompare(b.key));
 }
 
 const promoRaw = settings.promo ?? {};
