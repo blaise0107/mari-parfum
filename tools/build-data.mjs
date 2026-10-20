@@ -149,6 +149,10 @@ const cityRaw = settings.city ?? {};
 const payload = {
   brand: "MARI PARFUM",
   manager: String(settings.manager_username ?? "").trim().replace(/^@/, ""),
+  // Бот, на которого ведёт кнопка «Бот» на витрине, и адрес витрины, на
+  // который бот ведёт в ответ. Оба из settings.json — меняются в панели.
+  botUsername: String(settings.bot_username ?? "").trim().replace(/^@/, ""),
+  siteUrl: String(settings.site_url ?? "").trim(),
   phone: "+79366007345",
   volumes: (settings.volumes ?? [10]).map((v) => asInt(v)).filter((v) => v > 0),
   segments: segmentOrder.map((key) => ({

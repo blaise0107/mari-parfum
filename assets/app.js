@@ -640,6 +640,30 @@
     return `https://t.me/${encodeURIComponent(manager)}?text=${encodeURIComponent(text)}`;
   }
 
+  /**
+   * Кнопки «Бот» — в шапке и плавающая на телефоне.
+   *
+   * Адрес приходит из настроек, а не зашит в код: имя бота меняется, и
+   * менять его в двух местах — в коде и в панели — неправильно. Панель
+   * одна меняет, витрина подхватывает.
+   *
+   * Если бота в настройках нет, кнопок нет: витрина может появиться раньше
+   * бота, и пустая кнопка, ведущая в никуда, хуже её отсутствия.
+   */
+  function applyBotLinks() {
+    const bot = String(DATA.botUsername || "").trim().replace(/^@/, "");
+    const links = document.querySelectorAll("[data-bot-link]");
+    if (!bot) {
+      links.forEach((link) => link.remove());
+      return;
+    }
+    const href = `https://t.me/${encodeURIComponent(bot)}`;
+    links.forEach((link) => {
+      link.href = href;
+      link.title = `Бот-консультант @${bot} в Telegram`;
+    });
+  }
+
   async function copyText(text) {
     try {
       if (navigator.clipboard && window.isSecureContext) {
@@ -902,6 +926,7 @@ const errorBox = $("[data-form-error]", sheet);
     const drawer = $("#cart");
     wireBackdrop(drawer);
     wireBackdrop($("#checkout"));
+    applyBotLinks();
     renderCart();
     onCartChange(renderCart);
     reveal();
