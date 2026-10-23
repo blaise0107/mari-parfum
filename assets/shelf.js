@@ -12,7 +12,7 @@
    бутылки и двигает цену. Ради этого магазин и отличается от витрины
    готовых флаконов.
 
-   Файл отдельный и подключён ДО home.js намеренно. Он не правит чужой код:
+   Файл отдельный и подключён ДО home.js намеренно:
    подменяет MPFlacon.shelf на время первого рендера и вешает делегированный
    слушатель. home.js, app.js и styles.css не тронуты — если этот файл
    убрать, сайт работает ровно как раньше.
@@ -44,14 +44,13 @@
     return Number.isFinite(min) ? min : 0;
   }
 
-  /* Первый рендер полки. Свойства по умолчанию (без этикетки и пузырьков)
-     сохраняются: на мелком размере это шум. */
+  /* Первый рендер полки: этикетка мастерской, без декоративных пузырьков. */
   const originalShelf = F.shelf;
   F.shelf = function shelfWithVolume(product) {
     return originalShelf(product, {
       ml: current,
       volumes: volumes,
-      label: false,
+      label: true,
       bubbles: false,
     });
   };
@@ -70,9 +69,8 @@
     paint();
     /* Формула уровня живёт в MPFlacon и одна на весь сайт — берём её оттуда,
        а не переписываем здесь вторую копию. */
-    const level = F.fillFor(null, ml, volumes).toFixed(3);
-    for (const stage of document.querySelectorAll("#shelf .flacon__level")) {
-      stage.style.transform = `scaleY(${level})`;
+    for (const svg of document.querySelectorAll("#shelf .flacon svg")) {
+      F.setFill(svg, ml, volumes);
     }
   }
 

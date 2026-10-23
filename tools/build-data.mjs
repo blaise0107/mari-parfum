@@ -155,6 +155,10 @@ for (const segment of segmentOrder) {
       // price — цена за base_ml, а не за флакон. От неё считаются все объёмы.
       baseMl: asInt(item.base_ml, 10) > 0 ? asInt(item.base_ml, 10) : 10,
       basePrice: Math.max(0, asInt(item.price)),
+      // Панель меняет текущую цену, сохраняя исторические поля товара.
+      // После исправления владельцем старая отметка не должна оставаться.
+      priceProvisional: item.price_provisional === true &&
+        asInt(item.price_reference?.price, asInt(item.price)) === asInt(item.price),
       description: String(item.description ?? "").trim(),
       notes: notesOf(item),
       gender: String(item.gender ?? "unisex"),

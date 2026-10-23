@@ -113,11 +113,8 @@
     }
 
     // Флакон наполняется на глазах — это и есть главный жест страницы.
-    const stage = document.querySelector(".product__flacon .flacon__level");
-    if (stage) {
-      const level = window.MPFlacon.fillFor(product, selectedMl, volumes);
-      stage.style.transform = `scaleY(${level.toFixed(3)})`;
-    }
+    const stage = document.querySelector(".product__flacon .flacon svg");
+    window.MPFlacon.setFill(stage, selectedMl, volumes);
 
     document.querySelectorAll("[data-ml-option]").forEach((button) => {
       const active = Number(button.dataset.mlOption) === selectedMl;
@@ -183,7 +180,7 @@
 
       <div class="product__meta">
         <span>Цена считается от базовых ${product.baseMl} мл: ${MP.escapeHtml(MP.money(product.basePrice))} за ${product.baseMl} мл.</span>
-        <span>Наличие и срок подтверждает менеджер по телефону.</span>
+        <span>${product.priceProvisional ? "Цена новинки предварительная — подтвердит менеджер." : "Наличие и срок подтверждает менеджер по телефону."}</span>
         <span>Оригинальная парфюмерия, разлив в фабричный флакон.</span>
       </div>
     </div>`;

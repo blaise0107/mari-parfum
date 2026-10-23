@@ -7,10 +7,9 @@
 
    Четыре предмета ведения:
 
-   1. Флаконы. Тень под бутылкой теперь рисует сам SVG (контактная тень,
-      пятно на «полу», ореол от жидкости). Старый `filter: drop-shadow(...)`
-      лежал поверх и давал второе тёмное пятно — флакон выглядел подвешенным.
-      Теперь это мягкое свечение: аромат светится изнутри.
+    1. Флаконы. Студийные отражения и контактная тень нарисованы в SVG.
+       Ореол и дополнительные drop-shadow убраны: стекло не должно светиться
+       как неон. Жидкость и мениск двигаются отдельно от корпуса и этикетки.
 
    2. Типографика. Prata — самая частая «люксовая» гарнитура в сгенерированных
       страницах; Cormorant Garamond волосяными штрихами сразу отстраивается
@@ -32,7 +31,7 @@
 .product__flacon,
 .entry__thumb,
 .entry__thumb .flacon {
-  filter: drop-shadow(0 0 20px rgba(233, 207, 164, 0.09));
+  filter: none;
 }
 
 .shelf__item .flacon,
@@ -41,15 +40,32 @@
 }
 
 .shelf__item:hover .flacon {
-  /* Подъём остаётся, но меньше: тень на полу теперь часть флакона,
-     и сильный сдвиг уносит её вместе с бутылкой. */
-  transform: translateY(-5px) scale(1.03);
-  filter: drop-shadow(0 0 34px rgba(233, 207, 164, 0.24));
+  /* Малый подъём не отрывает нарисованную контактную тень от поверхности. */
+  transform: translateY(-3px);
+  filter: none;
 }
 
 .entry:hover .entry__thumb,
 .entry:hover .entry__thumb .flacon {
-  filter: drop-shadow(0 0 24px rgba(233, 207, 164, 0.18));
+  filter: none;
+}
+
+/* Уровень жидкости привязан к дну внутренней камеры, а не к краю SVG.
+   Масштабирование всего рисунка превращало бы натуральное стекло в резину. */
+.flacon__level {
+  transform-box: view-box;
+  transform-origin: 60px 154px;
+  transition: transform .75s var(--ease);
+}
+
+.flacon__meniscus {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transition: transform .75s var(--ease);
+}
+
+.entry__thumb .flacon__label-name {
+  display: none;
 }
 
 /* Блик на стекле больше не мигает сам по себе: старая анимация sheen-glass
@@ -201,7 +217,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .decant__sizes button,
-  .flacon__level {
+  .flacon__level,
+  .flacon__meniscus,
+  .shelf__item .flacon {
     transition: none;
   }
 }

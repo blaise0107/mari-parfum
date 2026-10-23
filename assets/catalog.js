@@ -19,19 +19,19 @@ window.MP_DATA = {
       "key": "luxury",
       "name": "Люкс",
       "emoji": "💎",
-      "range": "500–800 ₽"
+      "range": "500–3 300 ₽"
     },
     {
       "key": "middle",
       "name": "Средний сегмент",
       "emoji": "✨",
-      "range": "500–600 ₽"
+      "range": "500–1 820 ₽"
     },
     {
       "key": "budget",
       "name": "Бюджетный",
       "emoji": "🌸",
-      "range": "от 500 ₽"
+      "range": "500–990 ₽"
     }
   ],
   "products": [
@@ -44,6 +44,7 @@ window.MP_DATA = {
       "segmentName": "Люкс",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Легендарный амброво-фруктовый аромат.",
       "notes": {
         "top": "бергамот, слива",
@@ -62,6 +63,7 @@ window.MP_DATA = {
       "segmentName": "Люкс",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Насыщенный восточно-фруктовый аромат.",
       "notes": {
         "top": "черная вишня, бергамот",
@@ -80,6 +82,7 @@ window.MP_DATA = {
       "segmentName": "Люкс",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Современный цветочный аромат, сплетённый из десятков белых цветов.",
       "notes": {
         "top": "груша, канталон",
@@ -98,6 +101,7 @@ window.MP_DATA = {
       "segmentName": "Люкс",
       "baseMl": 10,
       "basePrice": 800,
+      "priceProvisional": false,
       "description": "Современный и энергичный аромат с оттенком мрачной элегантности.",
       "notes": {
         "top": "бергамот, лимон, грейпфрут",
@@ -108,6 +112,44 @@ window.MP_DATA = {
       "season": "all"
     },
     {
+      "id": "l006",
+      "slug": "miss-dior-parfum",
+      "name": "Miss Dior Parfum",
+      "brand": "Dior",
+      "segment": "luxury",
+      "segmentName": "Люкс",
+      "baseMl": 10,
+      "basePrice": 3135,
+      "priceProvisional": true,
+      "description": "Цветочно-фруктовый аромат с жасмином, сочными фруктами и тёплой древесно-амбровой базой. Версия Parfum 2024 года.",
+      "notes": {
+        "top": "мандарин, абрикос, персик",
+        "heart": "земляника, цветочные ноты, жасмин",
+        "base": "пачули, амбра, древесный амбровый аккорд, мох, атласский кедр"
+      },
+      "gender": "female",
+      "season": "all"
+    },
+    {
+      "id": "l007",
+      "slug": "princess",
+      "name": "Princess",
+      "brand": "Kilian",
+      "segment": "luxury",
+      "segmentName": "Люкс",
+      "baseMl": 10,
+      "basePrice": 3300,
+      "priceProvisional": true,
+      "description": "Мягкий гурманский аромат: зелёный чай и имбирь на воздушной базе из маршмеллоу, ванили и бензоина.",
+      "notes": {
+        "top": "лимон",
+        "heart": "персик, зелёный чай, имбирь, жасмин, зелёное яблоко, гедион",
+        "base": "ваниль, бензоин, маршмеллоу"
+      },
+      "gender": "female",
+      "season": "winter"
+    },
+    {
       "id": "m001",
       "slug": "dior-jadore",
       "name": "Dior J'adore",
@@ -116,6 +158,7 @@ window.MP_DATA = {
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Солнечный цветочный шипр с нотами жасмина, розы и жареной кукурузы.",
       "notes": {
         "top": "груша, бергамот, магнолия",
@@ -134,6 +177,7 @@ window.MP_DATA = {
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Пряный амброво-фруктовый аромат с выраженной цитровой свежестью.",
       "notes": {
         "top": "бергамот, мандарин, грейпфрут, розмарин",
@@ -152,6 +196,7 @@ window.MP_DATA = {
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Благородный шипрово-удовый аромат.",
       "notes": {
         "top": "бергамот, розмарин, смородина",
@@ -170,6 +215,7 @@ window.MP_DATA = {
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Нежный восточно-цветочный аромат с ярким нероли и розой.",
       "notes": {
         "top": "мандарин, нероли, бергамот",
@@ -181,20 +227,21 @@ window.MP_DATA = {
     },
     {
       "id": "m005",
-      "slug": "tom-ford-eros",
-      "name": "Tom Ford Eros",
-      "brand": "Tom Ford",
+      "slug": "eros",
+      "name": "Eros",
+      "brand": "Versace",
       "segment": "middle",
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Сладковатый восточно-пряный аромат.",
       "notes": {
         "top": "мята, мандарин, груша, эстрагон",
         "heart": "корица, шипр, лаванда",
         "base": "ваниль, сандал, табак, мускус"
       },
-      "gender": "unisex",
+      "gender": "male",
       "season": "all"
     },
     {
@@ -206,6 +253,7 @@ window.MP_DATA = {
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Сладкий восточно-ванильный аромат с нотой жасмина. Один из самых узнаваемых мужских запахов.",
       "notes": {
         "top": "мандарин, бергамот, лимон",
@@ -224,6 +272,7 @@ window.MP_DATA = {
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Восхитительно-яркий фруктовый аромат: манго, лист манго и маракуйя.",
       "notes": {
         "top": "манго, лист манго, маракуйя",
@@ -242,6 +291,7 @@ window.MP_DATA = {
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Невесомый цветочный аромат — маленький букет только распустившихся роз.",
       "notes": {
         "top": "мандарин, апельсиновая цедра",
@@ -260,6 +310,7 @@ window.MP_DATA = {
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Лёгкий цветочно-фруктовый аромат с нотами граната и пиона.",
       "notes": {
         "top": "гранат, юзу",
@@ -278,6 +329,7 @@ window.MP_DATA = {
       "segmentName": "Средний сегмент",
       "baseMl": 10,
       "basePrice": 600,
+      "priceProvisional": false,
       "description": "Сладкий восточно-цветочный аромат с малиной и личи.",
       "notes": {
         "top": "малина, личи, грейпфрут",
@@ -285,6 +337,25 @@ window.MP_DATA = {
         "base": "ваниль, мускус, сандал"
       },
       "gender": "female",
+      "season": "all"
+    },
+    {
+      "id": "m011",
+      "slug": "escentric-05",
+      "name": "Escentric 05",
+      "brand": "Escentric Molecules",
+      "segment": "middle",
+      "segmentName": "Средний сегмент",
+      "baseMl": 10,
+      "basePrice": 1820,
+      "priceProvisional": true,
+      "description": "Древесно-ароматическая композиция с инжиром, цитрусами, средиземноморскими травами и мягким кашмераном.",
+      "notes": {
+        "top": "розмарин, можжевельник, базилик, лавр, инжир, лист инжира, апельсин, бергамот",
+        "heart": "жасмин, ирис, фрезия, кипарис, гедион",
+        "base": "Iso E Super, лабданум, кашмеран, мастиковое дерево, амброксан, мускус"
+      },
+      "gender": "unisex",
       "season": "all"
     },
     {
@@ -296,6 +367,7 @@ window.MP_DATA = {
       "segmentName": "Бюджетный",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Свежий пряный аромат для спорта.",
       "notes": {
         "top": "апельсин, бергамот, грейпфрут",
@@ -314,6 +386,7 @@ window.MP_DATA = {
       "segmentName": "Бюджетный",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Сладкий цитрусово-цветочный аромат с нотой кокоса.",
       "notes": {
         "top": "бергамот, лайм, груша",
@@ -332,6 +405,7 @@ window.MP_DATA = {
       "segmentName": "Бюджетный",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Сладковатый золотистый цветочный аромат с нотами пейзажа и мёда.",
       "notes": {
         "top": "бергамот, груша, канталон",
@@ -350,6 +424,7 @@ window.MP_DATA = {
       "segmentName": "Бюджетный",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Свежий спортивный аромат: бергамот, мускус и белые ноты.",
       "notes": {
         "top": "бергамот, лимон, грейпфрут, хвоя",
@@ -368,6 +443,7 @@ window.MP_DATA = {
       "segmentName": "Бюджетный",
       "baseMl": 10,
       "basePrice": 500,
+      "priceProvisional": false,
       "description": "Свежий фруктово-дымный аромат с нотами ананаса, бергамота и дубовой мху. Считается эталоном мужской парфюмерии.",
       "notes": {
         "top": "ананас, бергамот, чёрная смородина",
@@ -376,6 +452,63 @@ window.MP_DATA = {
       },
       "gender": "male",
       "season": "all"
+    },
+    {
+      "id": "b005",
+      "slug": "blue-seduction",
+      "name": "Blue Seduction",
+      "brand": "Antonio Banderas",
+      "segment": "budget",
+      "segmentName": "Бюджетный",
+      "baseMl": 10,
+      "basePrice": 590,
+      "priceProvisional": true,
+      "description": "Свежий мужской аромат с дыней, мятой, морским аккордом и тёплой древесной базой. Версия for Men.",
+      "notes": {
+        "top": "бергамот, чёрная смородина, мята, дыня",
+        "heart": "мускатный орех, зелёное яблоко, кардамон, капучино, морская вода",
+        "base": "амбра, древесные ноты"
+      },
+      "gender": "male",
+      "season": "summer"
+    },
+    {
+      "id": "b006",
+      "slug": "modern-princess",
+      "name": "Modern Princess",
+      "brand": "Lanvin",
+      "segment": "budget",
+      "segmentName": "Бюджетный",
+      "baseMl": 10,
+      "basePrice": 990,
+      "priceProvisional": true,
+      "description": "Цветочно-фруктовый аромат с красным яблоком и смородиной, нежной фрезией и мягким мускусным шлейфом.",
+      "notes": {
+        "top": "красная смородина, красное яблоко",
+        "heart": "фрезия, жасмин",
+        "base": "мускус, орхидея, древесные ноты"
+      },
+      "gender": "female",
+      "season": "spring"
+    },
+    {
+      "id": "b007",
+      "slug": "touch-of-pink",
+      "name": "Touch of Pink",
+      "brand": "Lacoste",
+      "segment": "budget",
+      "segmentName": "Бюджетный",
+      "baseMl": 10,
+      "basePrice": 920,
+      "priceProvisional": true,
+      "description": "Живой цветочно-фруктовый аромат с апельсином, пряным кардамоном, жасмином и мягкой ванильно-сандаловой базой.",
+      "notes": {
+        "top": "апельсин, кориандр, кардамон, персик",
+        "heart": "семена моркови, лист фиалки, кардамон, кориандр, жасмин",
+        "base": "сандал, ваниль, мускус"
+      },
+      "gender": "female",
+      "season": "summer"
     }
   ],
   "delivery": [
