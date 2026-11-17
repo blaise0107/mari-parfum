@@ -19,13 +19,13 @@ window.MP_DATA = {
       "key": "luxury",
       "name": "Люкс",
       "emoji": "💎",
-      "range": "500–3 300 ₽"
+      "range": "500–6 160 ₽"
     },
     {
       "key": "middle",
       "name": "Средний сегмент",
       "emoji": "✨",
-      "range": "500–1 820 ₽"
+      "range": "500–2 625 ₽"
     },
     {
       "key": "budget",
@@ -148,6 +148,101 @@ window.MP_DATA = {
       },
       "gender": "female",
       "season": "winter"
+    },
+    {
+      "id": "l008",
+      "slug": "black-afgano",
+      "name": "Black Afgano",
+      "brand": "Nasomatto",
+      "segment": "luxury",
+      "segmentName": "Люкс",
+      "baseMl": 10,
+      "basePrice": 6160,
+      "priceProvisional": true,
+      "description": "Тёмная нишевая композиция с коноплёй, кофе и смолами. Плотная, дымная, с амброво-древесной базой.",
+      "notes": {
+        "top": "конопля, зелёные ноты",
+        "heart": "кофе, ладан, табак",
+        "base": "уд, амбра, мускус, смолы"
+      },
+      "gender": "unisex",
+      "season": "winter"
+    },
+    {
+      "id": "l009",
+      "slug": "fleur-narcotique",
+      "name": "Fleur Narcotique",
+      "brand": "Ex Nihilo",
+      "segment": "luxury",
+      "segmentName": "Люкс",
+      "baseMl": 10,
+      "basePrice": 2810,
+      "priceProvisional": true,
+      "description": "Изысканная цветочно-фруктовая композиция: личи и персик переходят в пион с жасмином, а база держится на мускусе.",
+      "notes": {
+        "top": "личи, бергамот, персик",
+        "heart": "пион, жасмин, апельсиновый цвет",
+        "base": "мускус, ветивер, пачули"
+      },
+      "gender": "unisex",
+      "season": "spring"
+    },
+    {
+      "id": "l010",
+      "slug": "kirke",
+      "name": "Kirke",
+      "brand": "Tiziana Terenzi",
+      "segment": "luxury",
+      "segmentName": "Люкс",
+      "baseMl": 10,
+      "basePrice": 1710,
+      "priceProvisional": true,
+      "description": "Сочный фруктово-цветочный аромат с личи и персиком, тёплой ванилью и мускусом в базе.",
+      "notes": {
+        "top": "личи, персик, чёрная смородина",
+        "heart": "жасмин, роза, фиалка",
+        "base": "мускус, ваниль, амбра"
+      },
+      "gender": "unisex",
+      "season": "all"
+    },
+    {
+      "id": "l011",
+      "slug": "this-is-not-gaba",
+      "name": "This Is Not GABA",
+      "brand": "Hormone Paris",
+      "segment": "luxury",
+      "segmentName": "Люкс",
+      "baseMl": 10,
+      "basePrice": 2305,
+      "priceProvisional": true,
+      "description": "Нишевый аромат с пряным началом и мягкой цветочно-амбровой базой. Необычный, камерный.",
+      "notes": {
+        "top": "бергамот, розовый перец",
+        "heart": "ирис, жасмин",
+        "base": "пачули, мускус, амбра"
+      },
+      "gender": "unisex",
+      "season": "all"
+    },
+    {
+      "id": "l012",
+      "slug": "la-bomba",
+      "name": "La Bomba",
+      "brand": "Carolina Herrera",
+      "segment": "luxury",
+      "segmentName": "Люкс",
+      "baseMl": 10,
+      "basePrice": 2900,
+      "priceProvisional": true,
+      "description": "Эффектный женский аромат: цитрусовое начало, белоцветочное сердце и сладковатая ванильная база.",
+      "notes": {
+        "top": "мандарин, бергамот",
+        "heart": "жасмин, роза, орхидея",
+        "base": "ваниль, пачули, мускус"
+      },
+      "gender": "female",
+      "season": "all"
     },
     {
       "id": "m001",
@@ -359,6 +454,101 @@ window.MP_DATA = {
       "season": "all"
     },
     {
+      "id": "m012",
+      "slug": "fahrenheit",
+      "name": "Fahrenheit",
+      "brand": "Dior",
+      "segment": "middle",
+      "segmentName": "Средний сегмент",
+      "baseMl": 10,
+      "basePrice": 2040,
+      "priceProvisional": true,
+      "description": "Классический мужской пряно-древесный аромат с лавандой, специями и кожаной базой.",
+      "notes": {
+        "top": "бергамот, мандарин, лаванда",
+        "heart": "гвоздика, корица, фиалка",
+        "base": "кожа, ветивер, пачули, амбра"
+      },
+      "gender": "male",
+      "season": "winter"
+    },
+    {
+      "id": "m013",
+      "slug": "white-chocola",
+      "name": "White Chocola",
+      "brand": "RicHarD",
+      "segment": "middle",
+      "segmentName": "Средний сегмент",
+      "baseMl": 10,
+      "basePrice": 2625,
+      "priceProvisional": true,
+      "description": "Гурманская композиция с белым шоколадом и ванилью, мягкая и сладкая.",
+      "notes": {
+        "top": "ваниль, клубника",
+        "heart": "белый шоколад, жасмин",
+        "base": "мускус, амбра, сандал"
+      },
+      "gender": "unisex",
+      "season": "winter"
+    },
+    {
+      "id": "m014",
+      "slug": "sexy-graffiti",
+      "name": "Sexy Graffiti",
+      "brand": "Escada",
+      "segment": "middle",
+      "segmentName": "Средний сегмент",
+      "baseMl": 10,
+      "basePrice": 2145,
+      "priceProvisional": true,
+      "description": "Ягодно-цветочный аромат с чёрной смородиной и малиной, мягкий и задорный.",
+      "notes": {
+        "top": "чёрная смородина, малина, груша",
+        "heart": "жасмин, лилия, роза",
+        "base": "мускус, сандал, ваниль"
+      },
+      "gender": "female",
+      "season": "spring"
+    },
+    {
+      "id": "m015",
+      "slug": "lucky-wish",
+      "name": "Lucky Wish",
+      "brand": "Anna Sui",
+      "segment": "middle",
+      "segmentName": "Средний сегмент",
+      "baseMl": 10,
+      "basePrice": 690,
+      "priceProvisional": true,
+      "description": "Лёгкий цветочно-фруктовый аромат с цитрусами и орхидеей, задорный и свежий.",
+      "notes": {
+        "top": "мандарин, грейпфрут, цветок апельсина",
+        "heart": "орхидея, фрезия, жасмин",
+        "base": "мускус, кедр, сандал"
+      },
+      "gender": "female",
+      "season": "spring"
+    },
+    {
+      "id": "m016",
+      "slug": "classic-no-77",
+      "name": "Classic No 77",
+      "brand": "Shaik",
+      "segment": "middle",
+      "segmentName": "Средний сегмент",
+      "baseMl": 10,
+      "basePrice": 800,
+      "priceProvisional": true,
+      "description": "Восточный пряно-древесный аромат с цитрусами, лавандой и тёплой амбровой базой.",
+      "notes": {
+        "top": "бергамот, лимон",
+        "heart": "лаванда, гвоздика",
+        "base": "кедр, амбра, мускус"
+      },
+      "gender": "unisex",
+      "season": "all"
+    },
+    {
       "id": "b001",
       "slug": "invictus",
       "name": "Invictus",
@@ -508,6 +698,63 @@ window.MP_DATA = {
         "base": "сандал, ваниль, мускус"
       },
       "gender": "female",
+      "season": "summer"
+    },
+    {
+      "id": "b008",
+      "slug": "yara",
+      "name": "Yara",
+      "brand": "Lattafa Perfumes",
+      "segment": "budget",
+      "segmentName": "Бюджетный",
+      "baseMl": 10,
+      "basePrice": 675,
+      "priceProvisional": true,
+      "description": "Сладкий цветочно-гурманский аромат с личи, жасмином и ванилью.",
+      "notes": {
+        "top": "мандарин, личи, розовый перец",
+        "heart": "жасмин, роза, гелиотроп",
+        "base": "ваниль, мускус, амбра, сандал"
+      },
+      "gender": "female",
+      "season": "all"
+    },
+    {
+      "id": "b009",
+      "slug": "eclat-darpege",
+      "name": "Eclat d'Arpège",
+      "brand": "Lanvin",
+      "segment": "budget",
+      "segmentName": "Бюджетный",
+      "baseMl": 10,
+      "basePrice": 825,
+      "priceProvisional": true,
+      "description": "Свежий цветочно-зелёный аромат с нотами зелёного чая, сирени и пиона.",
+      "notes": {
+        "top": "зелёный чай, лимон, лилия, персик",
+        "heart": "сирень, пион, жасмин",
+        "base": "мускус, амбра, кедр"
+      },
+      "gender": "female",
+      "season": "spring"
+    },
+    {
+      "id": "b010",
+      "slug": "eclat-sport",
+      "name": "Eclat Sport",
+      "brand": "Oriflame",
+      "segment": "budget",
+      "segmentName": "Бюджетный",
+      "baseMl": 10,
+      "basePrice": 550,
+      "priceProvisional": true,
+      "description": "Свежий мужской аромат с цитрусами, пряностями и древесной базой.",
+      "notes": {
+        "top": "бергамот, лайм",
+        "heart": "имбирь, кардамон",
+        "base": "кедр, амбра, пачули"
+      },
+      "gender": "male",
       "season": "summer"
     }
   ],
