@@ -93,25 +93,6 @@ window.MP_DATA = {
       "season": "all"
     },
     {
-      "id": "l005",
-      "slug": "sauvage",
-      "name": "Sauvage",
-      "brand": "Dior",
-      "segment": "luxury",
-      "segmentName": "Люкс",
-      "baseMl": 10,
-      "basePrice": 800,
-      "priceProvisional": false,
-      "description": "Современный и энергичный аромат с оттенком мрачной элегантности.",
-      "notes": {
-        "top": "бергамот, лимон, грейпфрут",
-        "heart": "розы, иланг-иланг, сандаловое дерево",
-        "base": "амбра, сандал, кедр"
-      },
-      "gender": "male",
-      "season": "all"
-    },
-    {
       "id": "l006",
       "slug": "miss-dior-parfum",
       "name": "Miss Dior Parfum",
