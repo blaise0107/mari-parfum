@@ -31,7 +31,7 @@ window.MP_DATA = {
       "key": "budget",
       "name": "Бюджетный",
       "emoji": "🌸",
-      "range": "500–990 ₽"
+      "range": "350–990 ₽"
     }
   ],
   "products": [
@@ -756,6 +756,25 @@ window.MP_DATA = {
       },
       "gender": "male",
       "season": "summer"
+    },
+    {
+      "id": "b011",
+      "slug": "comme-une-evidence",
+      "name": "Comme une Evidence",
+      "brand": "Yves Rocher",
+      "segment": "budget",
+      "segmentName": "Бюджетный",
+      "baseMl": 10,
+      "basePrice": 350,
+      "priceProvisional": true,
+      "description": "Мягкий цветочно-древесный аромат с нотами мандарина, розы и лилии, тёплой амбровой базой.",
+      "notes": {
+        "top": "мандарин, розовый перец",
+        "heart": "роза, лилия, фиалка",
+        "base": "мускус, амбра, кедр"
+      },
+      "gender": "female",
+      "season": "spring"
     }
   ],
   "delivery": [
